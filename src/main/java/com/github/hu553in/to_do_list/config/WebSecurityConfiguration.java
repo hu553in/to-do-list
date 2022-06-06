@@ -55,8 +55,7 @@ public class WebSecurityConfiguration {
                 .authorizeRequests()
                 .antMatchers(antPatternsToPermit).permitAll()
                 .antMatchers("/user/**").hasAuthority(Authority.ROLE_ADMIN.toString())
-                .anyRequest().authenticated()
-                .and()
+                .anyRequest().authenticated().and()
                 .authenticationProvider(new JwtAuthenticationProvider(jwtService));
         return httpSecurity.build();
     }
