@@ -11,7 +11,6 @@ public enum TaskSortableField {
 
     private final String fieldName;
 
-
     @Override
     public String toString() {
         return fieldName;
