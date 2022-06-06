@@ -2,16 +2,6 @@ version: "3.3"
 
 services:
 
-  nginx:
-    container_name: to-do-list-nginx
-    build:
-      context: .
-      dockerfile: ./nginx/Dockerfile
-    restart: on-failure
-    volumes:
-      - ./nginx/to-do-list.conf:/etc/nginx/conf.d/to-do-list.conf
-    network_mode: host
-
   postgresql:
     container_name: to-do-list-postgresql
     image: postgres:14-alpine

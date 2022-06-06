@@ -17,7 +17,6 @@ This project is the backend part of an app for managing tasks.
 
 * Spring Boot
 * PostgreSQL
-* nginx
 
 ## How to configure
 
@@ -35,7 +34,7 @@ Remember that you will need to use your custom values instead of used in instruc
 ## How to run
 
 1. Install Docker, Docker Compose, OpenJDK (≥ 17), GNU Make
-2. Run following commands to get the ability to use Docker as non-root restUser:
+2. Run following commands to get the ability to use Docker as non-root user:
     ```
     groupadd docker
     usermod -aG docker $(id -un)
