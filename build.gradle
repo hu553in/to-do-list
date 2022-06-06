@@ -1,0 +1,53 @@
+plugins {
+    id 'java'
+    id 'jacoco'
+
+    id 'io.freefair.lombok' version "$lombokPluginVersion"
+    id 'org.springframework.boot' version "$springBootVersion"
+    id 'io.spring.dependency-management' version "$springDependencyManagementPluginVersion"
+}
+
+group = 'com.github.hu553in'
+version = '1.0.0'
+sourceCompatibility = '17'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: "$mapstructVersion"
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: "$jjwtVersion"
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: "$jjwtVersion"
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: "$jjwtVersion"
+    runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.flywaydb:flyway-core'
+    implementation group: 'org.mapstruct', name: 'mapstruct', version: "$mapstructVersion"
+}
+
+jacocoTestReport {
+    dependsOn test
+}
+
+test {
+    finalizedBy jacocoTestReport
+    useJUnitPlatform()
+}
+
+jar {
+    enabled = false
+}

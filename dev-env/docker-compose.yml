@@ -1,0 +1,24 @@
+version: "3.3"
+
+services:
+
+  nginx:
+    container_name: to-do-list-nginx
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    restart: on-failure
+    volumes:
+      - ./nginx/to-do-list.conf:/etc/nginx/conf.d/to-do-list.conf
+    network_mode: host
+
+  postgresql:
+    container_name: to-do-list-postgresql
+    image: postgres:14-alpine
+    restart: on-failure
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - ${POSTGRES_PORT}:5432
