@@ -5,6 +5,7 @@ plugins {
     id 'io.freefair.lombok' version "$lombokPluginVersion"
     id 'org.springframework.boot' version "$springBootVersion"
     id 'io.spring.dependency-management' version "$springDependencyManagementPluginVersion"
+    id 'org.springdoc.openapi-gradle-plugin' version "$springdocPluginVersion"
 }
 
 group = 'com.github.hu553in'
@@ -37,6 +38,7 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'
     implementation group: 'org.mapstruct', name: 'mapstruct', version: "$mapstructVersion"
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: "$springdocVersion"
 }
 
 jacocoTestReport {

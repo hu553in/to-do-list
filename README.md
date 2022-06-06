@@ -42,3 +42,5 @@ Remember that you will need to use your custom values instead of used in instruc
     ```
 3. Reboot your machine to apply changes performed in the previous step
 4. Run `make`
+
+When the server is started, you can open [🔗 Swagger UI](http://localhost:8080/swagger-ui.html) to see API docs.

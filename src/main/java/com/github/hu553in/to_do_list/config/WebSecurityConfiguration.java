@@ -23,6 +23,18 @@ import javax.servlet.Filter;
 @RequiredArgsConstructor
 public class WebSecurityConfiguration {
 
+    private static final String[] antPatternsToPermit = new String[]{
+            "/sign-in",
+            "/sign-up",
+
+            // API docs
+            "/v3/api-docs",
+            "/v3/api-docs.yaml",
+            "/v3/api-docs/**",
+            "/swagger-ui.html",
+            "/swagger-ui/**"
+    };
+
     private final IJwtService jwtService;
 
     @Bean
@@ -41,7 +53,7 @@ public class WebSecurityConfiguration {
                 .requestCache().disable()
                 .addFilterBefore(authProcessingFilter, FilterSecurityInterceptor.class)
                 .authorizeRequests()
-                .antMatchers("/sign-in", "/sign-up").permitAll()
+                .antMatchers(antPatternsToPermit).permitAll()
                 .antMatchers("/user/**").hasAuthority(Authority.ROLE_ADMIN.toString())
                 .anyRequest().authenticated()
                 .and()
