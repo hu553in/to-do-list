@@ -6,7 +6,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 import java.time.Instant;
-import java.util.List;
+import java.util.Collection;
 
 @Getter
 @Builder
@@ -17,6 +17,6 @@ public class ApiErrorView {
 
     private HttpStatus status;
     private String message;
-    private List<String> details;
+    private Collection<String> details;
 
 }

@@ -6,7 +6,9 @@ import com.github.hu553in.to_do_list.form.UpdateTaskForm;
 import com.github.hu553in.to_do_list.model.TaskSortableField;
 import com.github.hu553in.to_do_list.model.TaskStatus;
 import com.github.hu553in.to_do_list.service.ITaskService;
+import com.github.hu553in.to_do_list.view.TaskView;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/task")
@@ -33,29 +36,34 @@ import java.util.Collection;
 public class TaskController {
 
     private final ITaskService taskService;
+    private final ConversionService conversionService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Collection<TaskDto> getAll(
+    public Collection<TaskView> getAll(
             @RequestParam(value = "status", defaultValue = "TO_DO") final TaskStatus status,
             @RequestParam(value = "sortBy", defaultValue = "TEXT") final TaskSortableField sortBy,
             @RequestParam(value = "sortDirection", defaultValue = "ASC") final Sort.Direction sortDirection) {
-        return taskService.getAll(status, sortBy, sortDirection);
+        return taskService
+                .getAll(status, sortBy, sortDirection)
+                .stream()
+                .map(it -> conversionService.convert(it, TaskView.class))
+                .collect(Collectors.toSet());
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@Valid @RequestBody final CreateTaskForm form) {
         TaskDto createdTask = taskService.create(form);
-        URI location = URI.create("/task/" + createdTask.getId());
+        URI location = URI.create("/task/" + createdTask.id());
         return ResponseEntity.created(location).build();
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public TaskDto getById(@PathVariable("id") final Integer id) {
-        return taskService.getById(id);
+    public TaskView getById(@PathVariable("id") final Integer id) {
+        return conversionService.convert(taskService.getById(id), TaskView.class);
     }
 
     @DeleteMapping("/{id}")

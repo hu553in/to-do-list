@@ -21,6 +21,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   @NonNull final WebRequest request) {
         String message = "Some method arguments are not valid";
         logger.error(message, e);
-        List<String> details = e
+        Collection<String> details = e
                 .getBindingResult()
                 .getAllErrors()
                 .stream()
@@ -64,7 +65,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .append(e.getValue())
                 .append(requiredType != null ? " to " + requiredType.getName() : " to required type")
                 .append(" is not supported");
-        List<String> details = List.of(stringBuilder.toString());
+        Collection<String> details = List.of(stringBuilder.toString());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .headers(headers)
@@ -90,7 +91,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         stringBuilder
                 .append(" to ")
                 .append(e.getTargetType().getName());
-        List<String> details = List.of(stringBuilder.toString());
+        Collection<String> details = List.of(stringBuilder.toString());
         return buildApiErrorView(HttpStatus.BAD_REQUEST, message, details);
     }
 
@@ -100,7 +101,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     public ApiErrorView handleConstraintViolation(final ConstraintViolationException e) {
         String message = "Some constraints have been violated";
         logger.error(message, e);
-        List<String> details = e
+        Collection<String> details = e
                 .getConstraintViolations()
                 .stream()
                 .map(cv -> "Root bean " + cv.getRootBeanClass().getName()
@@ -118,7 +119,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         logger.error(message, e);
         Class<?> requiredType = e.getRequiredType();
         String name = e.getName();
-        List<String> details = List.of(requiredType != null
+        Collection<String> details = List.of(requiredType != null
                 ? name + " should be of type " + requiredType.getName()
                 : name + " has invalid type");
         return buildApiErrorView(HttpStatus.BAD_REQUEST, message, details);
@@ -162,7 +163,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ApiErrorView buildApiErrorView(final HttpStatus status,
                                            final String message,
-                                           final List<String> details) {
+                                           final Collection<String> details) {
         return ApiErrorView
                 .builder()
                 .status(status)
