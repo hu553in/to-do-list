@@ -56,24 +56,30 @@ public class WebSecurityConfiguration {
         RequestMatcher signInMatcher = new AntPathRequestMatcher("/sign-in");
         RequestMatcher nonSignInMatcher = new NegatedRequestMatcher(signInMatcher);
         Filter authProcessingFilter = new HeaderJwtAuthProcessingFilter(nonSignInMatcher);
-        httpSecurity
+        return httpSecurity
                 .cors().and()
                 .anonymous().and()
                 .csrf().disable()
                 .formLogin().disable()
                 .httpBasic().disable()
                 .logout().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER).disable()
                 .requestCache().disable()
+                .sessionManagement(configurer -> {
+                    configurer.sessionCreationPolicy(SessionCreationPolicy.NEVER);
+                    configurer.disable();
+                })
                 .addFilterBefore(authProcessingFilter, FilterSecurityInterceptor.class)
-                .authorizeRequests()
-                .antMatchers(ANT_PATTERNS_TO_PERMIT_ALL).permitAll()
-                .antMatchers("/user/**").hasAuthority(Authority.ROLE_ADMIN.toString())
-                .anyRequest().authenticated().and()
                 .authenticationProvider(new JwtAuthenticationProvider(jwtService))
-                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
-                .accessDeniedHandler(accessDeniedHandler);
-        return httpSecurity.build();
+                .authorizeRequests(configurer -> {
+                    configurer.antMatchers(ANT_PATTERNS_TO_PERMIT_ALL).permitAll();
+                    configurer.antMatchers("/user/**").hasAuthority(Authority.ROLE_ADMIN.toString());
+                    configurer.anyRequest().authenticated();
+                })
+                .exceptionHandling(configurer -> {
+                    configurer.authenticationEntryPoint(authenticationEntryPoint);
+                    configurer.accessDeniedHandler(accessDeniedHandler);
+                })
+                .build();
     }
 
 }

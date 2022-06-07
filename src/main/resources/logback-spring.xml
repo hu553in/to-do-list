@@ -5,6 +5,4 @@
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>
-    <logger name="com.github.hu553in.to_do_list" level="INFO"/>
-    <logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" level="DEBUG"/>
 </configuration>
