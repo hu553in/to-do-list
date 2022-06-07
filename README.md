@@ -1,6 +1,7 @@
 # To-do list
 
 [![Gradle build](https://github.com/hu553in/to-do-list/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/hu553in/to-do-list/actions/workflows/gradle-build.yml)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f48e2fa500475ffcaef6/maintainability)](https://codeclimate.com/github/hu553in/to-do-list/maintainability)
 
 ## Table of contents
 
