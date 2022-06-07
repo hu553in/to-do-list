@@ -3,7 +3,7 @@ package com.github.hu553in.to_do_list.service.impl;
 import com.github.hu553in.to_do_list.dto.UserDto;
 import com.github.hu553in.to_do_list.entity.UserEntity;
 import com.github.hu553in.to_do_list.exception.NotFoundException;
-import com.github.hu553in.to_do_list.exception.UnauthorizedException;
+import com.github.hu553in.to_do_list.exception.SignInFailedException;
 import com.github.hu553in.to_do_list.exception.UsernameTakenException;
 import com.github.hu553in.to_do_list.form.SignInForm;
 import com.github.hu553in.to_do_list.form.SignUpForm;
@@ -29,7 +29,7 @@ public class AuthService implements IAuthService {
                 .findByUsername(form.username())
                 .orElseThrow(NotFoundException::new);
         if (!passwordEncoder.matches(form.password(), user.getPassword())) {
-            throw new UnauthorizedException();
+            throw new SignInFailedException();
         }
         return conversionService.convert(user, UserDto.class);
     }

@@ -9,6 +9,7 @@ import com.github.hu553in.to_do_list.model.TaskSortableField;
 import com.github.hu553in.to_do_list.model.TaskStatus;
 import com.github.hu553in.to_do_list.repository.jpa.TaskRepository;
 import com.github.hu553in.to_do_list.repository.jpa.UserRepository;
+import com.github.hu553in.to_do_list.service.ICurrentUserService;
 import com.github.hu553in.to_do_list.service.ITaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
@@ -26,7 +27,7 @@ public class TaskService implements ITaskService {
 
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
-    private final CurrentUserService currentUserService;
+    private final ICurrentUserService currentUserService;
     private final ConversionService conversionService;
 
     @Override

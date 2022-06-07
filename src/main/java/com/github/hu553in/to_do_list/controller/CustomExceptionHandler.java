@@ -1,9 +1,9 @@
 package com.github.hu553in.to_do_list.controller;
 
 import com.github.hu553in.to_do_list.exception.NotFoundException;
+import com.github.hu553in.to_do_list.exception.SignInFailedException;
 import com.github.hu553in.to_do_list.exception.UsernameTakenException;
 import com.github.hu553in.to_do_list.view.ApiErrorView;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.TypeDescriptor;
@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-@Slf4j
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
@@ -34,7 +33,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   @NonNull final HttpHeaders headers,
                                                                   @NonNull final HttpStatus status,
                                                                   @NonNull final WebRequest request) {
-        logger.error(e);
+        String message = "Some method arguments are not valid";
+        logger.error(message, e);
         List<String> details = e
                 .getBindingResult()
                 .getAllErrors()
@@ -44,9 +44,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .headers(headers)
-                .body(buildApiErrorView(HttpStatus.BAD_REQUEST,
-                        "Some method arguments are not valid",
-                        details));
+                .body(buildApiErrorView(HttpStatus.BAD_REQUEST, message, details));
     }
 
     @Override
@@ -55,7 +53,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   @NonNull final HttpHeaders headers,
                                                                   @NonNull final HttpStatus status,
                                                                   @NonNull final WebRequest request) {
-        logger.error(e);
+        String message = "Conversion is not supported";
+        logger.error(message, e);
         StringBuilder stringBuilder = new StringBuilder();
         Class<?> requiredType = e.getRequiredType();
         stringBuilder
@@ -69,14 +68,15 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .headers(headers)
-                .body(buildApiErrorView(HttpStatus.BAD_REQUEST, "Conversion is not supported", details));
+                .body(buildApiErrorView(HttpStatus.BAD_REQUEST, message, details));
     }
 
     @ExceptionHandler(ConversionFailedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ApiErrorView handleConversionFailed(final ConversionFailedException e) {
-        logger.error(e);
+        String message = "Conversion is failed";
+        logger.error(message, e);
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
                 .append("Unable to convert value ")
@@ -91,14 +91,15 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .append(" to ")
                 .append(e.getTargetType().getName());
         List<String> details = List.of(stringBuilder.toString());
-        return buildApiErrorView(HttpStatus.BAD_REQUEST, "Conversion is failed", details);
+        return buildApiErrorView(HttpStatus.BAD_REQUEST, message, details);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ApiErrorView handleConstraintViolation(final ConstraintViolationException e) {
-        logger.error(e);
+        String message = "Some constraints have been violated";
+        logger.error(message, e);
         List<String> details = e
                 .getConstraintViolations()
                 .stream()
@@ -106,44 +107,57 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                         + ", path " + cv.getPropertyPath()
                         + ": " + cv.getMessage())
                 .collect(Collectors.toList());
-        return buildApiErrorView(HttpStatus.BAD_REQUEST, "Some constraints have been violated", details);
+        return buildApiErrorView(HttpStatus.BAD_REQUEST, message, details);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ApiErrorView handleMethodArgumentTypeMismatch(final MethodArgumentTypeMismatchException e) {
-        logger.error(e);
+        String message = "Some method argument types do not match";
+        logger.error(message, e);
         Class<?> requiredType = e.getRequiredType();
         String name = e.getName();
         List<String> details = List.of(requiredType != null
                 ? name + " should be of type " + requiredType.getName()
                 : name + " has invalid type");
-        return buildApiErrorView(HttpStatus.BAD_REQUEST, "Some method argument types do not match", details);
+        return buildApiErrorView(HttpStatus.BAD_REQUEST, message, details);
     }
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ApiErrorView handleNotFound(final NotFoundException e) {
-        logger.error(e);
-        return buildApiErrorView(HttpStatus.NOT_FOUND, "Some entities are not found");
+        String message = "Some entities are not found";
+        logger.error(message, e);
+        return buildApiErrorView(HttpStatus.NOT_FOUND, message);
     }
 
     @ExceptionHandler(UsernameTakenException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
     public ApiErrorView handleUsernameTaken(final UsernameTakenException e) {
-        logger.error(e);
-        return buildApiErrorView(HttpStatus.CONFLICT, "Username is already taken");
+        String message = "Username is already taken";
+        logger.error(message, e);
+        return buildApiErrorView(HttpStatus.CONFLICT, message);
+    }
+
+    @ExceptionHandler(SignInFailedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ApiErrorView handleSignInFailed(final SignInFailedException e) {
+        String message = "Failed to sign in";
+        logger.error(message, e);
+        return buildApiErrorView(HttpStatus.UNAUTHORIZED, message);
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public ApiErrorView handleAnother(final Exception e) {
-        logger.error(e);
-        return buildApiErrorView(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error");
+        String message = "Unknown error";
+        logger.error(message, e);
+        return buildApiErrorView(HttpStatus.INTERNAL_SERVER_ERROR, message);
     }
 
     private ApiErrorView buildApiErrorView(final HttpStatus status,
