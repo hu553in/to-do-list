@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,7 @@ public class AuthService implements IAuthService {
     }
 
     @Override
+    @Transactional
     public void signUp(final SignUpForm form) {
         String username = form.username();
         if (userRepository.findByUsername(username).isPresent()) {

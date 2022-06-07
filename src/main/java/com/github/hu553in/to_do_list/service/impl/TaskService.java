@@ -66,6 +66,7 @@ public class TaskService implements ITaskService {
     }
 
     @Override
+    @Transactional
     public void update(final Integer id, final UpdateTaskForm form) {
         Integer currentUserId = currentUserService.getCurrentUser().getId();
         TaskEntity task = taskRepository

@@ -10,7 +10,7 @@ plugins {
 
 group = 'com.github.hu553in'
 version = '1.0.0'
-sourceCompatibility = '17'
+sourceCompatibility = "$javaVersion"
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'

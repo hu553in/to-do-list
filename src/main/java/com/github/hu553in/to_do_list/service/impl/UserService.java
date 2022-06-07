@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -41,6 +42,7 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @Transactional
     public void update(final Integer id, final UpdateUserForm form) {
         UserEntity user = userRepository
                 .findById(id)

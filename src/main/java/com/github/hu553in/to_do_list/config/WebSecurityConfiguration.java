@@ -23,7 +23,7 @@ import javax.servlet.Filter;
 @RequiredArgsConstructor
 public class WebSecurityConfiguration {
 
-    private static final String[] antPatternsToPermit = new String[]{
+    private static final String[] ANT_PATTERNS_TO_PERMIT_ALL = new String[]{
             "/sign-in",
             "/sign-up",
 
@@ -53,7 +53,7 @@ public class WebSecurityConfiguration {
                 .requestCache().disable()
                 .addFilterBefore(authProcessingFilter, FilterSecurityInterceptor.class)
                 .authorizeRequests()
-                .antMatchers(antPatternsToPermit).permitAll()
+                .antMatchers(ANT_PATTERNS_TO_PERMIT_ALL).permitAll()
                 .antMatchers("/user/**").hasAuthority(Authority.ROLE_ADMIN.toString())
                 .anyRequest().authenticated().and()
                 .authenticationProvider(new JwtAuthenticationProvider(jwtService));
