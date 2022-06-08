@@ -39,10 +39,15 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation group: 'org.mapstruct', name: 'mapstruct', version: "$mapstructVersion"
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: "$springdocVersion"
+    testImplementation group: 'org.testcontainers', name: 'postgresql', version: "$testcontainersVersion"
+    testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: "$testcontainersVersion"
 }
 
 jacocoTestReport {
     dependsOn test
+    reports {
+        xml.required = true
+    }
 }
 
 test {
