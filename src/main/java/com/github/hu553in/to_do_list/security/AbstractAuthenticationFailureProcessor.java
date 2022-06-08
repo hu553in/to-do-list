@@ -15,12 +15,12 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-public class AbstractAuthenticationFailureHandler {
+public class AbstractAuthenticationFailureProcessor {
 
     private final ObjectMapper objectMapper;
 
-    protected void handle(final HttpServletResponse response,
-                          final AuthenticationException e) throws IOException {
+    protected void process(final HttpServletResponse response,
+                           final AuthenticationException e) throws IOException {
         log.error("Authentication failure", e);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

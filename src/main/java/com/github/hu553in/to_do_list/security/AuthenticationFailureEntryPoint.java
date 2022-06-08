@@ -14,7 +14,7 @@ import java.io.IOException;
 @Component
 @Qualifier(AuthenticationFailureEntryPoint.QUALIFIER)
 @Slf4j
-public class AuthenticationFailureEntryPoint extends AbstractAuthenticationFailureHandler
+public class AuthenticationFailureEntryPoint extends AbstractAuthenticationFailureProcessor
         implements AuthenticationEntryPoint {
 
     public static final String QUALIFIER = "authenticationFailureEntryPoint";
@@ -27,7 +27,7 @@ public class AuthenticationFailureEntryPoint extends AbstractAuthenticationFailu
     public void commence(final HttpServletRequest request,
                          final HttpServletResponse response,
                          final AuthenticationException e) throws IOException {
-        handle(response, e);
+        process(response, e);
     }
 
 }

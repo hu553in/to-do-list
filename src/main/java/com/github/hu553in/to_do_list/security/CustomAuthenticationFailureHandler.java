@@ -14,7 +14,7 @@ import java.io.IOException;
 @Component
 @Qualifier(CustomAuthenticationFailureHandler.QUALIFIER)
 @Slf4j
-public class CustomAuthenticationFailureHandler extends AbstractAuthenticationFailureHandler
+public class CustomAuthenticationFailureHandler extends AbstractAuthenticationFailureProcessor
         implements AuthenticationFailureHandler {
 
     public static final String QUALIFIER = "customAuthenticationFailureHandler";
@@ -27,7 +27,7 @@ public class CustomAuthenticationFailureHandler extends AbstractAuthenticationFa
     public void onAuthenticationFailure(final HttpServletRequest request,
                                         final HttpServletResponse response,
                                         final AuthenticationException e) throws IOException {
-        handle(response, e);
+        process(response, e);
     }
 
 }
