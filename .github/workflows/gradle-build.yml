@@ -21,7 +21,7 @@ jobs:
           gradle-version: 7.4.2
           arguments: build
 
-      - name: Publish code coverage
+      - name: Upload test report to Code Climate
         uses: paambaati/codeclimate-action@v3.0.0
         env:
           CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
