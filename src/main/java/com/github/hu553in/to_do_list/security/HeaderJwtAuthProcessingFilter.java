@@ -5,28 +5,26 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class HeaderJwtAuthProcessingFilter extends AbstractJwtAuthProcessingFilter {
 
     private static final String AUTH_HEADER_NAME = "Authorization";
-    private static final Pattern TOKEN_PATTERN = Pattern.compile("^Bearer\\s+(.*)$");
-    private static final int TOKEN_GROUP = 1;
+    private static final String AUTH_HEADER_PREFIX = "Bearer ";
 
     public HeaderJwtAuthProcessingFilter(final RequestMatcher requestMatcher) {
         super(requestMatcher);
     }
 
     @Override
-    protected String getToken(final HttpServletRequest request) throws AuthenticationException {
+    protected String getRawToken(final HttpServletRequest request) throws AuthenticationException {
         String header = request.getHeader(AUTH_HEADER_NAME);
-        Matcher matcher = TOKEN_PATTERN.matcher(header);
-        if (matcher.matches()) {
-            return matcher.group(TOKEN_GROUP);
-        } else {
-            throw new JwtAuthenticationException("Invalid " + AUTH_HEADER_NAME + " header: " + header);
+        if (header.startsWith(AUTH_HEADER_PREFIX)) {
+            String token = header.substring(AUTH_HEADER_PREFIX.length());
+            if (token.length() > 0) {
+                return token;
+            }
         }
+        throw new JwtAuthenticationException("Invalid " + AUTH_HEADER_NAME + " header: " + header);
     }
 
 }
