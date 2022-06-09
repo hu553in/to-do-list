@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,28 +48,21 @@ public class UserService implements IUserService {
         UserEntity user = userRepository
                 .findById(id)
                 .orElseThrow(NotFoundException::new);
-        boolean updated = false;
-        String username = form.username();
-        if (username != null) {
-            if (userRepository.findByUsername(username).isPresent()) {
-                throw new UsernameTakenException();
-            }
-            user.setUsername(username);
-            updated = true;
-        }
-        String password = form.password();
-        if (password != null) {
-            user.setPassword(passwordEncoder.encode(password));
-            updated = true;
-        }
-        Boolean isAdmin = form.isAdmin();
-        if (isAdmin != null) {
-            user.setIsAdmin(isAdmin);
-            updated = true;
-        }
-        if (updated) {
-            userRepository.saveAndFlush(user);
-        }
+        Optional
+                .ofNullable(form.username())
+                .ifPresent(value -> {
+                    if (userRepository.findByUsername(value).isPresent()) {
+                        throw new UsernameTakenException();
+                    }
+                    user.setUsername(value);
+                });
+        Optional
+                .ofNullable(form.password())
+                .ifPresent(value -> user.setPassword(passwordEncoder.encode(value)));
+        Optional
+                .ofNullable(form.isAdmin())
+                .ifPresent(user::setIsAdmin);
+        userRepository.saveAndFlush(user);
     }
 
 }

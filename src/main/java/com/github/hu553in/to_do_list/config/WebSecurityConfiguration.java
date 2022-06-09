@@ -58,12 +58,12 @@ public class WebSecurityConfiguration {
     }
 
     @Bean
-    @SuppressFBWarnings("THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION")
+    @SuppressFBWarnings(value = "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION",
+            justification = "Exception is thrown by Spring Security methods.")
     public SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) throws Exception {
-        RequestMatcher signInMatcher = new AntPathRequestMatcher("/sign-in");
-        RequestMatcher nonSignInMatcher = new NegatedRequestMatcher(signInMatcher);
+        RequestMatcher negatedSignInMatcher = new NegatedRequestMatcher(new AntPathRequestMatcher("/sign-in"));
         // this abbreviation is used to shorten line length
-        AbstractAuthenticationProcessingFilter apf = new HeaderJwtAuthProcessingFilter(nonSignInMatcher);
+        AbstractAuthenticationProcessingFilter apf = new HeaderJwtAuthProcessingFilter(negatedSignInMatcher);
         apf.setAuthenticationFailureHandler(authenticationFailureHandler);
         return httpSecurity
                 .cors().and()
@@ -73,20 +73,17 @@ public class WebSecurityConfiguration {
                 .httpBasic().disable()
                 .logout().disable()
                 .requestCache().disable()
-                .sessionManagement(configurer -> {
-                    configurer.sessionCreationPolicy(SessionCreationPolicy.NEVER);
-                    configurer.disable();
-                })
+                .sessionManagement(conf -> conf.sessionCreationPolicy(SessionCreationPolicy.NEVER).disable())
                 .addFilterBefore(apf, FilterSecurityInterceptor.class)
                 .authenticationProvider(new JwtAuthenticationProvider(jwtService))
-                .authorizeRequests(configurer -> {
-                    configurer.antMatchers(ANT_PATTERNS_TO_PERMIT_ALL).permitAll();
-                    configurer.antMatchers("/user/**").hasAuthority(Authority.ROLE_ADMIN.toString());
-                    configurer.anyRequest().authenticated();
+                .authorizeRequests(conf -> {
+                    conf.antMatchers(ANT_PATTERNS_TO_PERMIT_ALL).permitAll();
+                    conf.antMatchers("/user/**").hasAuthority(Authority.ROLE_ADMIN.toString());
+                    conf.anyRequest().authenticated();
                 })
-                .exceptionHandling(configurer -> {
-                    configurer.authenticationEntryPoint(authenticationEntryPoint);
-                    configurer.accessDeniedHandler(accessDeniedHandler);
+                .exceptionHandling(conf -> {
+                    conf.authenticationEntryPoint(authenticationEntryPoint);
+                    conf.accessDeniedHandler(accessDeniedHandler);
                 })
                 .build();
     }

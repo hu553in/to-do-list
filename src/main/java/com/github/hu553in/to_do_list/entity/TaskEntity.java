@@ -15,6 +15,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.time.Instant;
@@ -48,5 +50,17 @@ public class TaskEntity {
 
     @Column(nullable = false)
     private Instant updatedAt;
+
+    @PrePersist
+    protected void prePersist() {
+        Instant now = Instant.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    protected void preUpdate() {
+        this.updatedAt = Instant.now();
+    }
 
 }

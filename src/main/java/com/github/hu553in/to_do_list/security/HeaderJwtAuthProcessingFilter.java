@@ -20,7 +20,7 @@ public class HeaderJwtAuthProcessingFilter extends AbstractJwtAuthProcessingFilt
         String header = request.getHeader(AUTH_HEADER_NAME);
         if (header.startsWith(AUTH_HEADER_PREFIX)) {
             String token = header.substring(AUTH_HEADER_PREFIX.length());
-            if (token.length() > 0) {
+            if (token.trim().length() > 0) {
                 return token;
             }
         }

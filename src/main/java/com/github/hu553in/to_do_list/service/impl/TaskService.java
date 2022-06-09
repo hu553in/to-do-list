@@ -17,8 +17,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,9 +48,6 @@ public class TaskService implements ITaskService {
         TaskEntity task = new TaskEntity();
         task.setText(form.text());
         task.setStatus(TaskStatus.TO_DO);
-        Instant now = Instant.now();
-        task.setCreatedAt(now);
-        task.setUpdatedAt(now);
         Integer currentUserId = currentUserService.getCurrentUser().getId();
         task.setOwner(userRepository.getReferenceById(currentUserId));
         TaskEntity createdTask = taskRepository.saveAndFlush(task);
@@ -73,21 +70,13 @@ public class TaskService implements ITaskService {
         TaskEntity task = taskRepository
                 .findByIdAndOwnerId(id, currentUserId)
                 .orElseThrow(NotFoundException::new);
-        String text = form.text();
-        boolean updated = false;
-        if (text != null) {
-            task.setText(text);
-            updated = true;
-        }
-        TaskStatus status = form.status();
-        if (status != null) {
-            task.setStatus(status);
-            updated = true;
-        }
-        if (updated) {
-            task.setUpdatedAt(Instant.now());
-            taskRepository.saveAndFlush(task);
-        }
+        Optional
+                .ofNullable(form.text())
+                .ifPresent(task::setText);
+        Optional
+                .ofNullable(form.status())
+                .ifPresent(task::setStatus);
+        taskRepository.saveAndFlush(task);
     }
 
     @Override

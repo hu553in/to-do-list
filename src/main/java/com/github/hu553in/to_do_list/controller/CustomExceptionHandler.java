@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.validation.ConstraintViolationException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,12 +38,14 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   @NonNull final WebRequest request) {
         String message = "Some method arguments are not valid";
         logger.error(message, e);
-        Collection<String> details = e
-                .getBindingResult()
-                .getAllErrors()
-                .stream()
-                .map(error -> error.getObjectName() + ": " + error.getDefaultMessage())
-                .collect(Collectors.toList());
+        Collection<String> details = new HashSet<>();
+        BindingResult bindingResult = e.getBindingResult();
+        bindingResult
+                .getFieldErrors()
+                .forEach(error -> details.add(error.getField() + ": " + error.getDefaultMessage()));
+        bindingResult
+                .getGlobalErrors()
+                .forEach(error -> details.add(error.getObjectName() + ": " + error.getDefaultMessage()));
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .headers(headers)
