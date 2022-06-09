@@ -21,7 +21,7 @@ public class AbstractAuthenticationFailureProcessor {
 
     protected void process(final HttpServletResponse response,
                            final AuthenticationException e) throws IOException {
-        log.error("Authentication failure", e);
+        logger.error("Authentication failure", e);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         List<String> details = e instanceof JwtAuthenticationException

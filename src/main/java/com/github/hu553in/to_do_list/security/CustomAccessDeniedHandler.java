@@ -30,7 +30,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(final HttpServletRequest request,
                        final HttpServletResponse response,
                        final AccessDeniedException e) throws IOException {
-        log.error("Access is denied", e);
+        logger.error("Access is denied", e);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         ApiErrorView apiErrorView = ApiErrorView

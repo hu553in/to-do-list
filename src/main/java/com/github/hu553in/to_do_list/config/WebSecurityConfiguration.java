@@ -7,6 +7,7 @@ import com.github.hu553in.to_do_list.security.CustomAuthenticationFailureHandler
 import com.github.hu553in.to_do_list.security.HeaderJwtAuthProcessingFilter;
 import com.github.hu553in.to_do_list.security.JwtAuthenticationProvider;
 import com.github.hu553in.to_do_list.service.IJwtService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,6 +58,7 @@ public class WebSecurityConfiguration {
     }
 
     @Bean
+    @SuppressFBWarnings("THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION")
     public SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) throws Exception {
         RequestMatcher signInMatcher = new AntPathRequestMatcher("/sign-in");
         RequestMatcher nonSignInMatcher = new NegatedRequestMatcher(signInMatcher);

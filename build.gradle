@@ -6,11 +6,17 @@ plugins {
     id 'org.springframework.boot' version "$springBootVersion"
     id 'io.spring.dependency-management' version "$springDependencyManagementPluginVersion"
     id 'org.springdoc.openapi-gradle-plugin' version "$springdocPluginVersion"
+    id 'com.github.spotbugs' version "$spotBugsVersion"
 }
 
 group = 'com.github.hu553in'
 version = '1.0.0'
-sourceCompatibility = "$javaVersion"
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of("$javaVersion")
+    }
+}
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -22,7 +28,7 @@ repositories {
 
 dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: "$mapstructVersion"
+    annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: "$mapStructVersion"
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -37,7 +43,7 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: "$jjwtVersion"
     runtimeOnly 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'
-    implementation group: 'org.mapstruct', name: 'mapstruct', version: "$mapstructVersion"
+    implementation group: 'org.mapstruct', name: 'mapstruct', version: "$mapStructVersion"
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: "$springdocVersion"
     testImplementation group: 'org.testcontainers', name: 'postgresql', version: "$testcontainersVersion"
     testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: "$testcontainersVersion"
@@ -47,6 +53,28 @@ jacocoTestReport {
     dependsOn test
     reports {
         xml.required = true
+        html.required = true
+    }
+}
+
+spotbugsMain {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+spotbugsTest {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+check {
+    dependsOn {
+        spotbugsMain
+        spotbugsTest
     }
 }
 
