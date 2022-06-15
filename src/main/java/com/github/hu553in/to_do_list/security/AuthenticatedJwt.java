@@ -1,24 +1,25 @@
 package com.github.hu553in.to_do_list.security;
 
+import com.github.hu553in.to_do_list.model.UserDetails;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serial;
 import java.util.Collection;
 
-public class AuthenticatedJwtToken extends AbstractAuthenticationToken {
+public class AuthenticatedJwt extends AbstractAuthenticationToken {
 
     @Serial
     private static final long serialVersionUID = 114342993139482413L;
 
-    private final int subject;
+    private final String username;
 
-    public AuthenticatedJwtToken(final int subject,
-                                 final String details,
-                                 final Collection<GrantedAuthority> authorities) {
+    public AuthenticatedJwt(final String username,
+                            final UserDetails userDetails,
+                            final Collection<GrantedAuthority> authorities) {
         super(authorities);
-        this.subject = subject;
-        setDetails(details);
+        this.username = username;
+        setDetails(userDetails);
         setAuthenticated(true);
     }
 
@@ -29,7 +30,7 @@ public class AuthenticatedJwtToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return subject;
+        return username;
     }
 
 }

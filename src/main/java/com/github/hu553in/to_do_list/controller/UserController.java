@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/admin/user")
 @RequiredArgsConstructor
 public class UserController {
 

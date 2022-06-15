@@ -124,7 +124,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         Class<?> requiredType = e.getRequiredType();
         String name = e.getName();
         Collection<String> details = List.of(requiredType != null
-                ? name + " should be of type " + requiredType.getName()
+                ? name + " must be of type " + requiredType.getName()
                 : name + " has invalid type");
         return buildApiErrorView(HttpStatus.BAD_REQUEST, message, details);
     }

@@ -3,7 +3,8 @@ package com.github.hu553in.to_do_list.service.impl;
 import com.github.hu553in.to_do_list.config.JwtConfiguration;
 import com.github.hu553in.to_do_list.dto.UserDto;
 import com.github.hu553in.to_do_list.model.Authority;
-import com.github.hu553in.to_do_list.security.AuthenticatedJwtToken;
+import com.github.hu553in.to_do_list.model.UserDetails;
+import com.github.hu553in.to_do_list.security.AuthenticatedJwt;
 import com.github.hu553in.to_do_list.service.IJwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -23,47 +24,47 @@ import java.util.HashSet;
 @RequiredArgsConstructor
 public class JwtService implements IJwtService {
 
-    private static final String USERNAME_CLAIM_NAME = "username";
-    private static final String IS_ADMIN_CLAIM_NAME = "isAdmin";
+    private static final String ID_CLAIM_NAME = "sid";
+    private static final String IS_ADMIN_CLAIM_NAME = "adm";
 
     private final JwtConfiguration jwtConfiguration;
 
     @Override
-    public String createToken(final UserDto restUser) {
+    public String create(final UserDto user) {
         Instant now = Instant.now();
-        Claims claims = Jwts
-                .claims()
-                .setIssuer(jwtConfiguration.getTokenIssuer())
-                .setIssuedAt(Date.from(now))
-                .setNotBefore(Date.from(now))
-                .setSubject(restUser.getId().toString())
-                .setExpiration(Date.from(now.plus(jwtConfiguration.getTokenExpiredIn())));
-        claims.put(USERNAME_CLAIM_NAME, restUser.getUsername());
-        claims.put(IS_ADMIN_CLAIM_NAME, restUser.getIsAdmin());
+        Date currentDate = Date.from(now);
+        Date expirationDate = Date.from(now.plus(jwtConfiguration.getExpiresIn()));
         return Jwts
                 .builder()
-                .setClaims(claims)
-                .signWith(Keys.hmacShaKeyFor(jwtConfiguration.getTokenSigningKey()), SignatureAlgorithm.HS512)
+                .setIssuer(jwtConfiguration.getIssuer())
+                .setIssuedAt(currentDate)
+                .setNotBefore(currentDate)
+                .setSubject(user.getUsername())
+                .setExpiration(expirationDate)
+                .claim(ID_CLAIM_NAME, user.getId())
+                .claim(IS_ADMIN_CLAIM_NAME, user.getIsAdmin())
+                .signWith(Keys.hmacShaKeyFor(jwtConfiguration.getSigningKey()), SignatureAlgorithm.HS512)
                 .compact();
     }
 
     @Override
-    public Authentication parseToken(final String token) {
+    public Authentication parse(final String token) {
         Claims claims = Jwts
                 .parserBuilder()
-                .setSigningKey(jwtConfiguration.getTokenSigningKey())
+                .setSigningKey(jwtConfiguration.getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        int id = Integer.parseInt(claims.getSubject());
-        String username = claims.get(USERNAME_CLAIM_NAME, String.class);
+        String username = claims.getSubject();
+        Integer id = claims.get(ID_CLAIM_NAME, Integer.class);
+        UserDetails userDetails = new UserDetails(id);
         Boolean isAdmin = claims.get(IS_ADMIN_CLAIM_NAME, Boolean.class);
         Collection<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(Authority.ROLE_USER::toString);
         if (isAdmin) {
             authorities.add(Authority.ROLE_ADMIN::toString);
         }
-        return new AuthenticatedJwtToken(id, username, authorities);
+        return new AuthenticatedJwt(username, userDetails, authorities);
     }
 
 }

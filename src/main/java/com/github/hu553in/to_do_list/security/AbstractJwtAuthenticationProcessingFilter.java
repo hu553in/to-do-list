@@ -15,11 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-public abstract class AbstractJwtAuthProcessingFilter extends AbstractAuthenticationProcessingFilter {
+public abstract class AbstractJwtAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
     private static final String ANONYMOUS = "ANONYMOUS";
 
-    AbstractJwtAuthProcessingFilter(final RequestMatcher requestMatcher) {
+    public AbstractJwtAuthenticationProcessingFilter(final RequestMatcher requestMatcher) {
         super(requestMatcher);
     }
 
@@ -27,7 +27,7 @@ public abstract class AbstractJwtAuthProcessingFilter extends AbstractAuthentica
     public Authentication attemptAuthentication(final HttpServletRequest request,
                                                 final HttpServletResponse response) throws AuthenticationException {
         try {
-            return new JwtToken(getRawToken(request));
+            return new IntermediateAuthenticationJwt(getRawToken(request));
         } catch (Exception e) {
             return new AnonymousAuthenticationToken(
                     ANONYMOUS,

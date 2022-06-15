@@ -1,6 +1,7 @@
 package com.github.hu553in.to_do_list.dto;
 
 import com.github.hu553in.to_do_list.model.Authority;
+import com.github.hu553in.to_do_list.model.UserDetails;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,8 +19,12 @@ public class UserDto {
     private Boolean isAdmin;
 
     public UserDto(final Authentication authentication) {
-        this.id = Integer.valueOf(String.valueOf(authentication.getPrincipal()));
-        this.username = String.valueOf(authentication.getDetails());
+        this.username = String.valueOf(authentication.getPrincipal());
+        if (!(authentication.getDetails() instanceof UserDetails userDetails)) {
+            throw new IllegalArgumentException("Authentication details must be of type "
+                    + UserDetails.class.getCanonicalName());
+        }
+        this.id = userDetails.id();
         this.isAdmin = authentication
                 .getAuthorities()
                 .stream()

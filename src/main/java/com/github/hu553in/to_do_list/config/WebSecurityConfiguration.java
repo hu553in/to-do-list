@@ -4,7 +4,7 @@ import com.github.hu553in.to_do_list.model.Authority;
 import com.github.hu553in.to_do_list.security.AuthenticationFailureEntryPoint;
 import com.github.hu553in.to_do_list.security.CustomAccessDeniedHandler;
 import com.github.hu553in.to_do_list.security.CustomAuthenticationFailureHandler;
-import com.github.hu553in.to_do_list.security.HeaderJwtAuthProcessingFilter;
+import com.github.hu553in.to_do_list.security.HeaderJwtAuthenticationProcessingFilter;
 import com.github.hu553in.to_do_list.security.JwtAuthenticationProvider;
 import com.github.hu553in.to_do_list.service.IJwtService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -20,15 +20,20 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfiguration {
 
-    private static final String[] ANT_PATTERNS_TO_PERMIT_ALL = new String[]{
+    private static final String[] PATTERNS_WITHOUT_AUTH = new String[]{
             "/sign-in",
             "/sign-up",
 
@@ -40,20 +45,25 @@ public class WebSecurityConfiguration {
             "/swagger-ui/**"
     };
 
+    private static final List<RequestMatcher> REQUEST_MATCHERS_WITHOUT_AUTH = Arrays
+            .stream(PATTERNS_WITHOUT_AUTH)
+            .map(AntPathRequestMatcher::new)
+            .collect(Collectors.toList());
+
     private final IJwtService jwtService;
-    private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final AuthenticationEntryPoint authenticationFailureEntryPoint;
     private final AccessDeniedHandler accessDeniedHandler;
     private final AuthenticationFailureHandler authenticationFailureHandler;
 
     public WebSecurityConfiguration(
             final IJwtService jwtService,
+            @Qualifier(CustomAccessDeniedHandler.QUALIFIER) final AccessDeniedHandler accessDeniedHandler,
             // these abbreviations are used to shorten line length
             @Qualifier(AuthenticationFailureEntryPoint.QUALIFIER) final AuthenticationEntryPoint aep,
-            @Qualifier(CustomAccessDeniedHandler.QUALIFIER) final AccessDeniedHandler adh,
             @Qualifier(CustomAuthenticationFailureHandler.QUALIFIER) final AuthenticationFailureHandler afh) {
         this.jwtService = jwtService;
-        this.authenticationEntryPoint = aep;
-        this.accessDeniedHandler = adh;
+        this.accessDeniedHandler = accessDeniedHandler;
+        this.authenticationFailureEntryPoint = aep;
         this.authenticationFailureHandler = afh;
     }
 
@@ -61,10 +71,9 @@ public class WebSecurityConfiguration {
     @SuppressFBWarnings(value = "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION",
             justification = "Exception is thrown by Spring Security methods.")
     public SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) throws Exception {
-        RequestMatcher negatedSignInMatcher = new NegatedRequestMatcher(new AntPathRequestMatcher("/sign-in"));
-        // this abbreviation is used to shorten line length
-        AbstractAuthenticationProcessingFilter apf = new HeaderJwtAuthProcessingFilter(negatedSignInMatcher);
-        apf.setAuthenticationFailureHandler(authenticationFailureHandler);
+        AbstractAuthenticationProcessingFilter authProcessingFilter = new HeaderJwtAuthenticationProcessingFilter(
+                new NegatedRequestMatcher(new AndRequestMatcher(REQUEST_MATCHERS_WITHOUT_AUTH)));
+        authProcessingFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
         return httpSecurity
                 .cors().and()
                 .anonymous().and()
@@ -73,16 +82,16 @@ public class WebSecurityConfiguration {
                 .httpBasic().disable()
                 .logout().disable()
                 .requestCache().disable()
-                .sessionManagement(conf -> conf.sessionCreationPolicy(SessionCreationPolicy.NEVER).disable())
-                .addFilterBefore(apf, FilterSecurityInterceptor.class)
+                .sessionManagement(conf -> conf.sessionCreationPolicy(SessionCreationPolicy.STATELESS).disable())
+                .addFilterBefore(authProcessingFilter, FilterSecurityInterceptor.class)
                 .authenticationProvider(new JwtAuthenticationProvider(jwtService))
                 .authorizeRequests(conf -> {
-                    conf.antMatchers(ANT_PATTERNS_TO_PERMIT_ALL).permitAll();
-                    conf.antMatchers("/user/**").hasAuthority(Authority.ROLE_ADMIN.toString());
+                    conf.antMatchers(PATTERNS_WITHOUT_AUTH).permitAll();
+                    conf.antMatchers("/admin/**").hasAuthority(Authority.ROLE_ADMIN.toString());
                     conf.anyRequest().authenticated();
                 })
                 .exceptionHandling(conf -> {
-                    conf.authenticationEntryPoint(authenticationEntryPoint);
+                    conf.authenticationEntryPoint(authenticationFailureEntryPoint);
                     conf.accessDeniedHandler(accessDeniedHandler);
                 })
                 .build();

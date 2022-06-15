@@ -29,7 +29,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public SignInView signIn(@Valid @RequestBody final SignInForm form) {
-        return new SignInView(jwtService.createToken(authService.signIn(form)));
+        return new SignInView(jwtService.create(authService.signIn(form)));
     }
 
     @PostMapping(value = "/sign-up", consumes = MediaType.APPLICATION_JSON_VALUE)

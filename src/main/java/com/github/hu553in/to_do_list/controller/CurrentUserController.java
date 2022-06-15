@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CurrentUserController {
 
-    private final ICurrentUserService restUserService;
+    private final ICurrentUserService currentUserService;
     private final ConversionService conversionService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public UserView me() {
-        return conversionService.convert(restUserService.getCurrentUser(), UserView.class);
+        return conversionService.convert(currentUserService.getCurrentUser(), UserView.class);
     }
 
 }

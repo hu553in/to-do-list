@@ -16,15 +16,15 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
         String token = String.valueOf(authentication.getCredentials());
         try {
-            return jwtService.parseToken(token);
+            return jwtService.parse(token);
         } catch (Exception e) {
-            throw new JwtAuthenticationException("Invalid token", e);
+            throw new JwtAuthenticationException("Invalid JWT", e);
         }
     }
 
     @Override
-    public boolean supports(final Class<?> authentication) {
-        return JwtToken.class.isAssignableFrom(authentication);
+    public boolean supports(final Class<?> authenticationClass) {
+        return IntermediateAuthenticationJwt.class.isAssignableFrom(authenticationClass);
     }
 
 }

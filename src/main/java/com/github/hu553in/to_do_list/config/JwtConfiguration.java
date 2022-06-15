@@ -14,17 +14,17 @@ import java.time.Duration;
 public class JwtConfiguration {
 
     @Getter
-    private String tokenIssuer;
+    private String issuer;
 
-    private String tokenSigningKey;
-    private Integer tokenDuration;
+    private String signingKey;
+    private Integer durationMinutes;
 
-    public byte[] getTokenSigningKey() {
-        return tokenSigningKey.getBytes(StandardCharsets.UTF_8);
+    public byte[] getSigningKey() {
+        return signingKey.getBytes(StandardCharsets.UTF_8);
     }
 
-    public Duration getTokenExpiredIn() {
-        return Duration.ofMinutes(tokenDuration);
+    public Duration getExpiresIn() {
+        return Duration.ofMinutes(durationMinutes);
     }
 
 }

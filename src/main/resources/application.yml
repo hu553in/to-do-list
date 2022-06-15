@@ -19,6 +19,6 @@ spring:
       password: ${SPRING_SECURITY_PASSWORD}
 
 jwt:
-  token-issuer: ${JWT_ISSUER}
-  token-signing-key: ${JWT_SIGNING_KEY}
-  token-duration: ${JWT_DURATION}
+  issuer: ${JWT_ISSUER}
+  signing-key: ${JWT_SIGNING_KEY}
+  duration-minutes: ${JWT_DURATION_MINUTES}
