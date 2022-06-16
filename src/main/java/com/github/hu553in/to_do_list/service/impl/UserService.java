@@ -65,4 +65,9 @@ public class UserService implements IUserService {
         userRepository.saveAndFlush(user);
     }
 
+    @Override
+    public Boolean existsByUsernameAndIdAndIsAdmin(final String username, final Integer id, final Boolean isAdmin) {
+        return userRepository.existsByUsernameAndIdAndIsAdmin(username, id, isAdmin);
+    }
+
 }

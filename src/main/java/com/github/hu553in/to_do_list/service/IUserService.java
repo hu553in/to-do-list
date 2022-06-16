@@ -13,4 +13,6 @@ public interface IUserService {
 
     void update(Integer id, UpdateUserForm form);
 
+    Boolean existsByUsernameAndIdAndIsAdmin(String username, Integer id, Boolean isAdmin);
+
 }

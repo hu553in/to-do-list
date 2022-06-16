@@ -5,8 +5,8 @@ import org.springframework.security.core.Authentication;
 
 public interface IJwtService {
 
-    Authentication parse(String token);
+    String buildToken(UserDto user);
 
-    String create(UserDto user);
+    Authentication authenticateToken(String token);
 
 }

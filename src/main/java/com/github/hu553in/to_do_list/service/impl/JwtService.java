@@ -6,6 +6,7 @@ import com.github.hu553in.to_do_list.model.Authority;
 import com.github.hu553in.to_do_list.model.UserDetails;
 import com.github.hu553in.to_do_list.security.AuthenticatedJwt;
 import com.github.hu553in.to_do_list.service.IJwtService;
+import com.github.hu553in.to_do_list.service.IUserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -19,18 +20,21 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class JwtService implements IJwtService {
 
-    private static final String ID_CLAIM_NAME = "sid";
-    private static final String IS_ADMIN_CLAIM_NAME = "adm";
+    private static final String ID_CLAIM_NAME = "id";
+    private static final String IS_ADMIN_CLAIM_NAME = "is_admin";
+    private static final Integer ALLOWED_CLOCK_SKEW_SECONDS = 180;
 
     private final JwtConfiguration jwtConfiguration;
+    private final IUserService userService;
 
     @Override
-    public String create(final UserDto user) {
+    public String buildToken(final UserDto user) {
         Instant now = Instant.now();
         Date currentDate = Date.from(now);
         Date expirationDate = Date.from(now.plus(jwtConfiguration.getExpiresIn()));
@@ -48,13 +52,16 @@ public class JwtService implements IJwtService {
     }
 
     @Override
-    public Authentication parse(final String token) {
+    public Authentication authenticateToken(final String token) {
         Claims claims = Jwts
                 .parserBuilder()
                 .setSigningKey(jwtConfiguration.getSigningKey())
+                .requireIssuer(jwtConfiguration.getIssuer())
+                .setAllowedClockSkewSeconds(ALLOWED_CLOCK_SKEW_SECONDS)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+        validateClaims(claims);
         String username = claims.getSubject();
         Integer id = claims.get(ID_CLAIM_NAME, Integer.class);
         UserDetails userDetails = new UserDetails(id);
@@ -65,6 +72,30 @@ public class JwtService implements IJwtService {
             authorities.add(Authority.ROLE_ADMIN::toString);
         }
         return new AuthenticatedJwt(username, userDetails, authorities);
+    }
+
+    private void validateClaims(final Claims claims) {
+        getNullableClaimOrElseThrowException(claims.getExpiration(), Claims.EXPIRATION);
+        getNullableClaimOrElseThrowException(claims.getIssuedAt(), Claims.ISSUED_AT);
+        getNullableClaimOrElseThrowException(claims.getNotBefore(), Claims.NOT_BEFORE);
+        String username = getNullableClaimOrElseThrowException(
+                claims.getSubject(),
+                Claims.SUBJECT);
+        Integer id = getNullableClaimOrElseThrowException(
+                claims.get(ID_CLAIM_NAME, Integer.class),
+                ID_CLAIM_NAME);
+        Boolean isAdmin = getNullableClaimOrElseThrowException(
+                claims.get(IS_ADMIN_CLAIM_NAME, Boolean.class),
+                IS_ADMIN_CLAIM_NAME);
+        if (!userService.existsByUsernameAndIdAndIsAdmin(username, id, isAdmin)) {
+            throw new IllegalArgumentException("Unable to find user by data from claims");
+        }
+    }
+
+    private <T> T getNullableClaimOrElseThrowException(final T claim, final String claimName) {
+        return Optional
+                .ofNullable(claim)
+                .orElseThrow(() -> new IllegalArgumentException(claimName + " claim must be not null"));
     }
 
 }
