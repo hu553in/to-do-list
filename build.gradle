@@ -38,9 +38,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
-    compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: "$jjwtVersion"
-    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: "$jjwtVersion"
-    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: "$jjwtVersion"
+    implementation group: 'com.auth0', name: 'java-jwt', version: "$javaJwtVersion"
     runtimeOnly 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'
     implementation group: 'org.mapstruct', name: 'mapstruct', version: "$mapStructVersion"

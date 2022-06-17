@@ -35,7 +35,7 @@ public class TaskService implements ITaskService {
                                       final TaskSortableField sortBy,
                                       final Sort.Direction sortDirection) {
         Sort sort = Sort.by(sortDirection, sortBy.toString());
-        Integer currentUserId = currentUserService.getCurrentUser().getId();
+        Integer currentUserId = currentUserService.getCurrentUser().id();
         return taskRepository
                 .findAllByStatusAndOwnerId(status, currentUserId, sort)
                 .stream()
@@ -48,7 +48,7 @@ public class TaskService implements ITaskService {
         TaskEntity task = new TaskEntity();
         task.setText(form.text());
         task.setStatus(TaskStatus.TO_DO);
-        Integer currentUserId = currentUserService.getCurrentUser().getId();
+        Integer currentUserId = currentUserService.getCurrentUser().id();
         task.setOwner(userRepository.getReferenceById(currentUserId));
         TaskEntity createdTask = taskRepository.saveAndFlush(task);
         return conversionService.convert(createdTask, TaskDto.class);
@@ -56,7 +56,7 @@ public class TaskService implements ITaskService {
 
     @Override
     public TaskDto getById(final Integer id) {
-        Integer currentUserId = currentUserService.getCurrentUser().getId();
+        Integer currentUserId = currentUserService.getCurrentUser().id();
         return taskRepository
                 .findByIdAndOwnerId(id, currentUserId)
                 .map(it -> conversionService.convert(it, TaskDto.class))
@@ -66,7 +66,7 @@ public class TaskService implements ITaskService {
     @Override
     @Transactional
     public void update(final Integer id, final UpdateTaskForm form) {
-        Integer currentUserId = currentUserService.getCurrentUser().getId();
+        Integer currentUserId = currentUserService.getCurrentUser().id();
         TaskEntity task = taskRepository
                 .findByIdAndOwnerId(id, currentUserId)
                 .orElseThrow(NotFoundException::new);
@@ -82,7 +82,7 @@ public class TaskService implements ITaskService {
     @Override
     @Transactional
     public void delete(final Integer id) {
-        Integer currentUserId = currentUserService.getCurrentUser().getId();
+        Integer currentUserId = currentUserService.getCurrentUser().id();
         taskRepository
                 .deleteByIdAndOwnerId(id, currentUserId)
                 .orElseThrow(NotFoundException::new);

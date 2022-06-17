@@ -22,3 +22,4 @@ jwt:
   issuer: ${JWT_ISSUER}
   signing-key: ${JWT_SIGNING_KEY}
   duration-minutes: ${JWT_DURATION_MINUTES}
+  leeway-seconds: ${JWT_LEEWAY_SECONDS}

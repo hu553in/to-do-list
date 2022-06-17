@@ -35,7 +35,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserDto findById(final Integer id) {
+    public UserDto getById(final Integer id) {
         return userRepository
                 .findById(id)
                 .map(it -> conversionService.convert(it, UserDto.class))
@@ -50,24 +50,19 @@ public class UserService implements IUserService {
                 .orElseThrow(NotFoundException::new);
         Optional
                 .ofNullable(form.username())
-                .ifPresent(value -> {
-                    if (userRepository.findByUsername(value).isPresent()) {
+                .ifPresent(it -> {
+                    if (userRepository.findByUsername(it).isPresent()) {
                         throw new UsernameTakenException();
                     }
-                    user.setUsername(value);
+                    user.setUsername(it);
                 });
         Optional
                 .ofNullable(form.password())
-                .ifPresent(value -> user.setPassword(passwordEncoder.encode(value)));
+                .ifPresent(it -> user.setPassword(passwordEncoder.encode(it)));
         Optional
                 .ofNullable(form.isAdmin())
                 .ifPresent(user::setIsAdmin);
         userRepository.saveAndFlush(user);
-    }
-
-    @Override
-    public Boolean existsByUsernameAndIdAndIsAdmin(final String username, final Integer id, final Boolean isAdmin) {
-        return userRepository.existsByUsernameAndIdAndIsAdmin(username, id, isAdmin);
     }
 
 }

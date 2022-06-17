@@ -9,10 +9,8 @@ public interface IUserService {
 
     Collection<UserDto> findAll();
 
-    UserDto findById(Integer id);
+    UserDto getById(Integer id);
 
     void update(Integer id, UpdateUserForm form);
-
-    Boolean existsByUsernameAndIdAndIsAdmin(String username, Integer id, Boolean isAdmin);
 
 }

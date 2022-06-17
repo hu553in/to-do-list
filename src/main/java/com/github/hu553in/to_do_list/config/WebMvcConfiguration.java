@@ -1,6 +1,5 @@
 package com.github.hu553in.to_do_list.config;
 
-import lombok.Setter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -14,7 +13,6 @@ import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
 @EnableWebMvc
-@Setter
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
     @Override

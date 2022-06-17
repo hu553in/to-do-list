@@ -43,7 +43,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public UserView getById(@PathVariable("id") final Integer id) {
-        return conversionService.convert(userService.findById(id), UserView.class);
+        return conversionService.convert(userService.getById(id), UserView.class);
     }
 
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)

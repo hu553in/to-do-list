@@ -82,17 +82,17 @@ public class WebSecurityConfiguration {
                 .httpBasic().disable()
                 .logout().disable()
                 .requestCache().disable()
-                .sessionManagement(conf -> conf.sessionCreationPolicy(SessionCreationPolicy.STATELESS).disable())
+                .sessionManagement(it -> it.sessionCreationPolicy(SessionCreationPolicy.STATELESS).disable())
                 .addFilterBefore(authProcessingFilter, FilterSecurityInterceptor.class)
                 .authenticationProvider(new JwtAuthenticationProvider(jwtService))
-                .authorizeRequests(conf -> {
-                    conf.antMatchers(PATTERNS_WITHOUT_AUTH).permitAll();
-                    conf.antMatchers("/admin/**").hasAuthority(Authority.ROLE_ADMIN.toString());
-                    conf.anyRequest().authenticated();
+                .authorizeRequests(it -> {
+                    it.antMatchers(PATTERNS_WITHOUT_AUTH).permitAll();
+                    it.antMatchers("/admin/**").hasAuthority(Authority.ROLE_ADMIN.toString());
+                    it.anyRequest().authenticated();
                 })
-                .exceptionHandling(conf -> {
-                    conf.authenticationEntryPoint(authenticationFailureEntryPoint);
-                    conf.accessDeniedHandler(accessDeniedHandler);
+                .exceptionHandling(it -> {
+                    it.authenticationEntryPoint(authenticationFailureEntryPoint);
+                    it.accessDeniedHandler(accessDeniedHandler);
                 })
                 .build();
     }

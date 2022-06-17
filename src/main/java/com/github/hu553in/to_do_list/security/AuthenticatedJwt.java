@@ -1,6 +1,5 @@
 package com.github.hu553in.to_do_list.security;
 
-import com.github.hu553in.to_do_list.model.UserDetails;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -14,12 +13,9 @@ public class AuthenticatedJwt extends AbstractAuthenticationToken {
 
     private final String username;
 
-    public AuthenticatedJwt(final String username,
-                            final UserDetails userDetails,
-                            final Collection<GrantedAuthority> authorities) {
+    public AuthenticatedJwt(final String username, final Collection<GrantedAuthority> authorities) {
         super(authorities);
         this.username = username;
-        setDetails(userDetails);
         setAuthenticated(true);
     }
 

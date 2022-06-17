@@ -19,6 +19,9 @@ public class JwtConfiguration {
     private String signingKey;
     private Integer durationMinutes;
 
+    @Getter
+    private Long leewaySeconds;
+
     public byte[] getSigningKey() {
         return signingKey.getBytes(StandardCharsets.UTF_8);
     }

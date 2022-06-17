@@ -1,6 +1,7 @@
 package com.github.hu553in.to_do_list.controller;
 
 import com.github.hu553in.to_do_list.exception.NotFoundException;
+import com.github.hu553in.to_do_list.exception.ServerErrorException;
 import com.github.hu553in.to_do_list.exception.SignInFailedException;
 import com.github.hu553in.to_do_list.exception.UsernameTakenException;
 import com.github.hu553in.to_do_list.view.ApiErrorView;
@@ -42,10 +43,10 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         BindingResult bindingResult = e.getBindingResult();
         bindingResult
                 .getFieldErrors()
-                .forEach(error -> details.add(error.getField() + ": " + error.getDefaultMessage()));
+                .forEach(it -> details.add(it.getField() + ": " + it.getDefaultMessage()));
         bindingResult
                 .getGlobalErrors()
-                .forEach(error -> details.add(error.getObjectName() + ": " + error.getDefaultMessage()));
+                .forEach(it -> details.add(it.getObjectName() + ": " + it.getDefaultMessage()));
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .headers(headers)
@@ -108,9 +109,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         Collection<String> details = e
                 .getConstraintViolations()
                 .stream()
-                .map(cv -> "Root bean " + cv.getRootBeanClass().getName()
-                        + ", path " + cv.getPropertyPath()
-                        + ": " + cv.getMessage())
+                .map(it -> "Root bean " + it.getRootBeanClass().getName()
+                        + ", path " + it.getPropertyPath()
+                        + ": " + it.getMessage())
                 .collect(Collectors.toList());
         return buildApiErrorView(HttpStatus.BAD_REQUEST, message, details);
     }
@@ -156,13 +157,20 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildApiErrorView(HttpStatus.UNAUTHORIZED, message);
     }
 
+    @ExceptionHandler(ServerErrorException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ApiErrorView handleServerError(final ServerErrorException e) {
+        logger.error(e);
+        return buildApiErrorView(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown server error");
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public ApiErrorView handleAnother(final Exception e) {
-        String message = "Unknown error";
-        logger.error(message, e);
-        return buildApiErrorView(HttpStatus.INTERNAL_SERVER_ERROR, message);
+        logger.error(e);
+        return buildApiErrorView(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error");
     }
 
     private ApiErrorView buildApiErrorView(final HttpStatus status,
