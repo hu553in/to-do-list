@@ -15,9 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-public abstract class AbstractJwtAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
+import static org.springframework.security.config.Elements.ANONYMOUS;
 
-    private static final String ANONYMOUS = "ANONYMOUS";
+public abstract class AbstractJwtAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
     public AbstractJwtAuthenticationProcessingFilter(final RequestMatcher requestMatcher) {
         super(requestMatcher);
@@ -27,7 +27,7 @@ public abstract class AbstractJwtAuthenticationProcessingFilter extends Abstract
     public Authentication attemptAuthentication(final HttpServletRequest request,
                                                 final HttpServletResponse response) throws AuthenticationException {
         try {
-            return new IntermediateAuthenticationJwt(getRawToken(request));
+            return new JwtToAuthenticate(getRawToken(request));
         } catch (Exception e) {
             return new AnonymousAuthenticationToken(
                     ANONYMOUS,

@@ -6,16 +6,16 @@ import org.springframework.security.core.GrantedAuthority;
 import java.io.Serial;
 import java.util.Collection;
 
-public class AuthenticatedJwt extends AbstractAuthenticationToken {
+public class AuthenticatedUser extends AbstractAuthenticationToken {
 
     @Serial
     private static final long serialVersionUID = 114342993139482413L;
 
-    private final String username;
+    private final Integer id;
 
-    public AuthenticatedJwt(final String username, final Collection<GrantedAuthority> authorities) {
+    public AuthenticatedUser(final Integer id, final Collection<GrantedAuthority> authorities) {
         super(authorities);
-        this.username = username;
+        this.id = id;
         setAuthenticated(true);
     }
 
@@ -26,7 +26,7 @@ public class AuthenticatedJwt extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return username;
+        return id;
     }
 
 }

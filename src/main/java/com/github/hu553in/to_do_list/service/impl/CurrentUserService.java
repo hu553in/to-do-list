@@ -20,11 +20,13 @@ public class CurrentUserService implements ICurrentUserService {
     @Override
     public UserDto getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication.getPrincipal() instanceof Integer currentUserId)) {
+            throw new ServerErrorException("Authentication principal must be integer representing current user ID");
+        }
         return userRepository
-                .findByUsername(String.valueOf(authentication.getPrincipal()))
+                .findById(currentUserId)
                 .map(it -> conversionService.convert(it, UserDto.class))
-                .orElseThrow(() -> new ServerErrorException(
-                        "Unable to find user by data from Spring Security context"));
+                .orElseThrow(() -> new ServerErrorException("Current user is not found by ID"));
     }
 
 }

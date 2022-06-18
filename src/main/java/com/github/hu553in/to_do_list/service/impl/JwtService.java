@@ -7,9 +7,10 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.github.hu553in.to_do_list.config.JwtConfiguration;
 import com.github.hu553in.to_do_list.dto.UserDto;
 import com.github.hu553in.to_do_list.entity.UserEntity;
+import com.github.hu553in.to_do_list.exception.NotFoundException;
 import com.github.hu553in.to_do_list.model.Authority;
 import com.github.hu553in.to_do_list.repository.jpa.UserRepository;
-import com.github.hu553in.to_do_list.security.AuthenticatedJwt;
+import com.github.hu553in.to_do_list.security.AuthenticatedUser;
 import com.github.hu553in.to_do_list.service.IJwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -33,20 +34,22 @@ public class JwtService implements IJwtService {
         Instant now = Instant.now();
         Date currentDate = Date.from(now);
         Date expirationDate = Date.from(now.plus(jwtConfiguration.getExpiresIn()));
+        Algorithm algorithm = Algorithm.HMAC512(jwtConfiguration.getSigningKey());
         return JWT
                 .create()
                 .withIssuer(jwtConfiguration.getIssuer())
                 .withIssuedAt(currentDate)
                 .withNotBefore(currentDate)
-                .withSubject(user.username())
+                .withSubject(String.valueOf(user.id()))
                 .withExpiresAt(expirationDate)
-                .sign(Algorithm.HMAC512(jwtConfiguration.getSigningKey()));
+                .sign(algorithm);
     }
 
     @Override
     public Authentication authenticateToken(final String token) {
+        Algorithm algorithm = Algorithm.HMAC512(jwtConfiguration.getSigningKey());
         DecodedJWT decodedJwt = JWT
-                .require(Algorithm.HMAC512(jwtConfiguration.getSigningKey()))
+                .require(algorithm)
                 .withIssuer(jwtConfiguration.getIssuer())
                 .withClaimPresence(PublicClaims.ISSUED_AT)
                 .withClaimPresence(PublicClaims.NOT_BEFORE)
@@ -55,16 +58,21 @@ public class JwtService implements IJwtService {
                 .acceptLeeway(jwtConfiguration.getLeewaySeconds())
                 .build()
                 .verify(token);
-        String username = decodedJwt.getSubject();
+        Integer userId;
+        try {
+            userId = Integer.valueOf(decodedJwt.getSubject());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("JWT subject must be parseable integer representing user ID");
+        }
         UserEntity user = userRepository
-                .findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("Unable to find user by data from claims"));
+                .findById(userId)
+                .orElseThrow(() -> new NotFoundException("User is not found by ID"));
         Collection<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(Authority.ROLE_USER::toString);
         if (user.getIsAdmin()) {
             authorities.add(Authority.ROLE_ADMIN::toString);
         }
-        return new AuthenticatedJwt(username, authorities);
+        return new AuthenticatedUser(userId, authorities);
     }
 
 }
