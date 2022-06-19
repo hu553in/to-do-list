@@ -84,6 +84,7 @@ public class JwtService implements IJwtService {
         return new AuthenticatedUser(userId, authorities);
     }
 
+    // TODO: probably this should be changed in future, see https://github.com/auth0/java-jwt/issues/558
     private void validateDateClaimsNotNull(final DecodedJWT decodedJWT) {
         validateClaimNotNull(decodedJWT.getIssuedAt(), PublicClaims.ISSUED_AT);
         validateClaimNotNull(decodedJWT.getNotBefore(), PublicClaims.NOT_BEFORE);

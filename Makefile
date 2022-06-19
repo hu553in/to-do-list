@@ -25,5 +25,8 @@ down_dev_env_rm_images:
 connect_to_psql_dev_env:
 	docker-compose exec to-do-list-postgresql psql ${POSTGRES_USER} -U ${POSTGRES_PASSWORD}
 
-generate_api_docs:
+generate_api_docs: up_dev_env
 	./gradlew clean generateOpenApiDocs
+
+generate_javadoc:
+	./gradlew javadoc
