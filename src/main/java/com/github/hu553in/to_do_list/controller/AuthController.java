@@ -3,7 +3,6 @@ package com.github.hu553in.to_do_list.controller;
 import com.github.hu553in.to_do_list.form.SignInForm;
 import com.github.hu553in.to_do_list.form.SignUpForm;
 import com.github.hu553in.to_do_list.service.IAuthService;
-import com.github.hu553in.to_do_list.service.IJwtService;
 import com.github.hu553in.to_do_list.view.SignInView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +20,6 @@ import javax.validation.Valid;
 public class AuthController {
 
     private final IAuthService authService;
-    private final IJwtService jwtService;
 
     @PostMapping(value = "/sign-in",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -29,7 +27,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public SignInView signIn(@Valid @RequestBody final SignInForm form) {
-        return new SignInView(jwtService.buildToken(authService.signIn(form)));
+        return new SignInView(authService.signIn(form));
     }
 
     @PostMapping(value = "/sign-up", consumes = MediaType.APPLICATION_JSON_VALUE)

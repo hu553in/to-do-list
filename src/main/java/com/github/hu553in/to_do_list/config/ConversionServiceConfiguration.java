@@ -12,7 +12,7 @@ import java.util.Collection;
 public class ConversionServiceConfiguration {
 
     @Bean
-    public ConversionService conversionService(Collection<Converter<?, ?>> converters) {
+    public ConversionService conversionService(final Collection<Converter<?, ?>> converters) {
         DefaultConversionService conversionService = new DefaultConversionService();
         converters.forEach(conversionService::addConverter);
         return conversionService;

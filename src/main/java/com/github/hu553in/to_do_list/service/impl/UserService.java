@@ -2,8 +2,8 @@ package com.github.hu553in.to_do_list.service.impl;
 
 import com.github.hu553in.to_do_list.dto.UserDto;
 import com.github.hu553in.to_do_list.entity.UserEntity;
+import com.github.hu553in.to_do_list.exception.EmailTakenException;
 import com.github.hu553in.to_do_list.exception.NotFoundException;
-import com.github.hu553in.to_do_list.exception.UsernameTakenException;
 import com.github.hu553in.to_do_list.form.UpdateUserForm;
 import com.github.hu553in.to_do_list.repository.jpa.UserRepository;
 import com.github.hu553in.to_do_list.service.IUserService;
@@ -49,19 +49,19 @@ public class UserService implements IUserService {
                 .findById(id)
                 .orElseThrow(NotFoundException::new);
         Optional
-                .ofNullable(form.username())
+                .ofNullable(form.email())
                 .ifPresent(it -> {
-                    if (userRepository.findByUsername(it).isPresent()) {
-                        throw new UsernameTakenException();
+                    if (userRepository.findByEmail(it).isPresent()) {
+                        throw new EmailTakenException();
                     }
-                    user.setUsername(it);
+                    user.setEmail(it);
                 });
         Optional
                 .ofNullable(form.password())
                 .ifPresent(it -> user.setPassword(passwordEncoder.encode(it)));
         Optional
-                .ofNullable(form.isAdmin())
-                .ifPresent(user::setIsAdmin);
+                .ofNullable(form.admin())
+                .ifPresent(user::setAdmin);
         userRepository.saveAndFlush(user);
     }
 

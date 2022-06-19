@@ -1,9 +1,9 @@
 package com.github.hu553in.to_do_list.controller;
 
+import com.github.hu553in.to_do_list.exception.AuthorizationFailedException;
+import com.github.hu553in.to_do_list.exception.EmailTakenException;
 import com.github.hu553in.to_do_list.exception.NotFoundException;
 import com.github.hu553in.to_do_list.exception.ServerErrorException;
-import com.github.hu553in.to_do_list.exception.SignInFailedException;
-import com.github.hu553in.to_do_list.exception.UsernameTakenException;
 import com.github.hu553in.to_do_list.view.ApiErrorView;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.core.convert.ConversionFailedException;
@@ -112,7 +112,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .map(it -> "Root bean " + it.getRootBeanClass().getName()
                         + ", path " + it.getPropertyPath()
                         + ": " + it.getMessage())
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
         return buildApiErrorView(HttpStatus.BAD_REQUEST, message, details);
     }
 
@@ -139,20 +139,20 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildApiErrorView(HttpStatus.NOT_FOUND, message);
     }
 
-    @ExceptionHandler(UsernameTakenException.class)
+    @ExceptionHandler(EmailTakenException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
-    public ApiErrorView handleUsernameTaken(final UsernameTakenException e) {
-        String message = "Username is already taken";
+    public ApiErrorView handleEmailTaken(final EmailTakenException e) {
+        String message = "Email is already taken";
         logger.error(message, e);
         return buildApiErrorView(HttpStatus.CONFLICT, message);
     }
 
-    @ExceptionHandler(SignInFailedException.class)
+    @ExceptionHandler(AuthorizationFailedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ResponseBody
-    public ApiErrorView handleSignInFailed(final SignInFailedException e) {
-        String message = "Failed to sign in";
+    public ApiErrorView handleAuthorizationFailed(final AuthorizationFailedException e) {
+        String message = "Authorization is failed";
         logger.error(message, e);
         return buildApiErrorView(HttpStatus.UNAUTHORIZED, message);
     }

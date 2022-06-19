@@ -2,7 +2,9 @@ package com.github.hu553in.to_do_list.service.impl;
 
 import com.github.hu553in.to_do_list.dto.TaskDto;
 import com.github.hu553in.to_do_list.entity.TaskEntity;
+import com.github.hu553in.to_do_list.entity.UserEntity;
 import com.github.hu553in.to_do_list.exception.NotFoundException;
+import com.github.hu553in.to_do_list.exception.ServerErrorException;
 import com.github.hu553in.to_do_list.form.CreateTaskForm;
 import com.github.hu553in.to_do_list.form.UpdateTaskForm;
 import com.github.hu553in.to_do_list.model.TaskSortableField;
@@ -40,18 +42,7 @@ public class TaskService implements ITaskService {
                 .findAllByStatusAndOwnerId(status, currentUserId, sort)
                 .stream()
                 .map(it -> conversionService.convert(it, TaskDto.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public TaskDto create(final CreateTaskForm form) {
-        TaskEntity task = new TaskEntity();
-        task.setText(form.text());
-        task.setStatus(TaskStatus.TO_DO);
-        Integer currentUserId = currentUserService.getCurrentUser().id();
-        task.setOwner(userRepository.getReferenceById(currentUserId));
-        TaskEntity createdTask = taskRepository.saveAndFlush(task);
-        return conversionService.convert(createdTask, TaskDto.class);
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -61,6 +52,19 @@ public class TaskService implements ITaskService {
                 .findByIdAndOwnerId(id, currentUserId)
                 .map(it -> conversionService.convert(it, TaskDto.class))
                 .orElseThrow(NotFoundException::new);
+    }
+
+    @Override
+    public TaskDto create(final CreateTaskForm form) {
+        TaskEntity task = new TaskEntity();
+        task.setText(form.text());
+        task.setStatus(TaskStatus.TO_DO);
+        UserEntity currentUser = userRepository
+                .findById(currentUserService.getCurrentUser().id())
+                .orElseThrow(() -> new ServerErrorException("Current user is not found by ID"));
+        task.setOwner(currentUser);
+        TaskEntity createdTask = taskRepository.saveAndFlush(task);
+        return conversionService.convert(createdTask, TaskDto.class);
     }
 
     @Override

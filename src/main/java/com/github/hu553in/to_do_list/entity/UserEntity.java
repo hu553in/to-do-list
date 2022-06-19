@@ -28,13 +28,13 @@ public class UserEntity {
     private Integer id;
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private String email;
 
     @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
-    private Boolean isAdmin = false;
+    private Boolean admin = false;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<TaskEntity> tasks;

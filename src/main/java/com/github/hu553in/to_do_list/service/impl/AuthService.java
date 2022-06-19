@@ -2,13 +2,13 @@ package com.github.hu553in.to_do_list.service.impl;
 
 import com.github.hu553in.to_do_list.dto.UserDto;
 import com.github.hu553in.to_do_list.entity.UserEntity;
-import com.github.hu553in.to_do_list.exception.NotFoundException;
-import com.github.hu553in.to_do_list.exception.SignInFailedException;
-import com.github.hu553in.to_do_list.exception.UsernameTakenException;
+import com.github.hu553in.to_do_list.exception.AuthorizationFailedException;
+import com.github.hu553in.to_do_list.exception.EmailTakenException;
 import com.github.hu553in.to_do_list.form.SignInForm;
 import com.github.hu553in.to_do_list.form.SignUpForm;
 import com.github.hu553in.to_do_list.repository.jpa.UserRepository;
 import com.github.hu553in.to_do_list.service.IAuthService;
+import com.github.hu553in.to_do_list.service.IJwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,29 +20,28 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService implements IAuthService {
 
     private final UserRepository userRepository;
+    private final IJwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final ConversionService conversionService;
 
     @Override
-    public UserDto signIn(final SignInForm form) {
+    public String signIn(final SignInForm form) {
         UserEntity user = userRepository
-                .findByUsername(form.username())
-                .orElseThrow(NotFoundException::new);
-        if (!passwordEncoder.matches(form.password(), user.getPassword())) {
-            throw new SignInFailedException();
-        }
-        return conversionService.convert(user, UserDto.class);
+                .findByEmail(form.email())
+                .filter(it -> passwordEncoder.matches(form.password(), it.getPassword()))
+                .orElseThrow(AuthorizationFailedException::new);
+        return jwtService.buildToken(conversionService.convert(user, UserDto.class));
     }
 
     @Override
     @Transactional
     public void signUp(final SignUpForm form) {
-        String username = form.username();
-        if (userRepository.findByUsername(username).isPresent()) {
-            throw new UsernameTakenException();
+        String email = form.email();
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new EmailTakenException();
         }
         UserEntity user = new UserEntity();
-        user.setUsername(username);
+        user.setEmail(email);
         user.setPassword(passwordEncoder.encode(form.password()));
         userRepository.saveAndFlush(user);
     }

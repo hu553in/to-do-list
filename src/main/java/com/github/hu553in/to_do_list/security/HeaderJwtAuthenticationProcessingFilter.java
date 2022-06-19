@@ -19,7 +19,7 @@ public class HeaderJwtAuthenticationProcessingFilter extends AbstractJwtAuthenti
     }
 
     @Override
-    protected String getRawToken(final HttpServletRequest request) throws AuthenticationException {
+    protected String extractTokenFromRequest(final HttpServletRequest request) throws AuthenticationException {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header.startsWith(AUTHORIZATION_HEADER_PREFIX)) {
             String token = StringUtils

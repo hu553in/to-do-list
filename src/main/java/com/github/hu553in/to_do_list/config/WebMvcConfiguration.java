@@ -19,7 +19,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public void addCorsMappings(@NonNull final CorsRegistry registry) {
         registry
                 .addMapping("/**")
-                .allowedMethods(GET.toString(), POST.toString(), PATCH.toString(), DELETE.toString());
+                .allowedMethods(
+                        GET.toString(),
+                        POST.toString(),
+                        PATCH.toString(),
+                        DELETE.toString());
     }
 
 }

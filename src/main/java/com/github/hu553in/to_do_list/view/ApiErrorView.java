@@ -1,6 +1,7 @@
 package com.github.hu553in.to_do_list.view;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,7 @@ import java.util.Collection;
 @Builder
 public class ApiErrorView {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @JsonFormat(shape = Shape.STRING)
     private final Instant timestamp = Instant.now();
 
     private HttpStatus status;

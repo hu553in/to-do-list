@@ -27,7 +27,7 @@ public abstract class AbstractJwtAuthenticationProcessingFilter extends Abstract
     public Authentication attemptAuthentication(final HttpServletRequest request,
                                                 final HttpServletResponse response) throws AuthenticationException {
         try {
-            return new JwtToAuthenticate(getRawToken(request));
+            return new JwtToAuthenticate(extractTokenFromRequest(request));
         } catch (Exception e) {
             return new AnonymousAuthenticationToken(
                     ANONYMOUS,
@@ -45,6 +45,6 @@ public abstract class AbstractJwtAuthenticationProcessingFilter extends Abstract
         filterChain.doFilter(request, response);
     }
 
-    protected abstract String getRawToken(final HttpServletRequest request) throws AuthenticationException;
+    protected abstract String extractTokenFromRequest(final HttpServletRequest request) throws AuthenticationException;
 
 }

@@ -13,9 +13,9 @@ public interface ITaskService {
 
     Collection<TaskDto> getAll(TaskStatus status, TaskSortableField sortBy, Sort.Direction sortDirection);
 
-    TaskDto create(CreateTaskForm form);
-
     TaskDto getById(Integer id);
+
+    TaskDto create(CreateTaskForm form);
 
     void update(Integer id, UpdateTaskForm form);
 

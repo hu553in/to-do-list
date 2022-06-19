@@ -1,6 +1,6 @@
 # To-do list
 
-[![Gradle build](https://github.com/hu553in/to-do-list/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/hu553in/to-do-list/actions/workflows/gradle-build.yml)
+[![CI](https://github.com/hu553in/to-do-list/actions/workflows/ci.yml/badge.svg)](https://github.com/hu553in/to-do-list/actions/workflows/ci.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/f48e2fa500475ffcaef6/maintainability)](https://codeclimate.com/github/hu553in/to-do-list/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/f48e2fa500475ffcaef6/test_coverage)](https://codeclimate.com/github/hu553in/to-do-list/test_coverage)
 
@@ -25,7 +25,7 @@ This project is the backend part of an app for managing tasks.
 You can perform a base app configuration using the following [.env file](./.env).
 
 Also, you can change the default user set in the following
-[Flyway migration](./src/main/resources/db/migration/V1_1__create_users.sql).\
+[Flyway migration](./src/main/resources/db/migration/repeatable/R__create_users.sql).\
 Note that the `password` column of the `app_user` table stores password hashes generated using
 [Bcrypt](https://en.wikipedia.org/wiki/Bcrypt) (10 rounds).\
 [Here](https://www.browserling.com/tools/bcrypt) you can generate hashes for your custom user set.

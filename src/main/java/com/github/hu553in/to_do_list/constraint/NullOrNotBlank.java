@@ -28,9 +28,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = {})
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 @Retention(RUNTIME)
-public @interface NullOrNotBlankString {
+public @interface NullOrNotBlank {
 
-    String message() default "string must be null or not blank";
+    String message() default "must be null or not blank";
 
     Class<?>[] groups() default {};
 

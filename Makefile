@@ -14,7 +14,7 @@ run:
 	java -jar ./build/libs/to-do-list-*.jar
 
 up_dev_env:
-	docker-compose -f ./dev-env/docker-compose.yml up -d --build
+	docker-compose -f ./dev-env/docker-compose.yml up -d
 
 down_dev_env:
 	docker-compose -f ./dev-env/docker-compose.yml down
