@@ -1,10 +1,10 @@
 package com.github.hu553in.to_do_list.service;
 
 import com.github.hu553in.to_do_list.dto.TaskDto;
+import com.github.hu553in.to_do_list.enumeration.TaskSortableField;
+import com.github.hu553in.to_do_list.enumeration.TaskStatus;
 import com.github.hu553in.to_do_list.form.CreateTaskForm;
 import com.github.hu553in.to_do_list.form.UpdateTaskForm;
-import com.github.hu553in.to_do_list.model.TaskSortableField;
-import com.github.hu553in.to_do_list.model.TaskStatus;
 import org.springframework.data.domain.Sort;
 
 import java.util.Collection;

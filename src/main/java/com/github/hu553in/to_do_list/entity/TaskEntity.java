@@ -1,6 +1,6 @@
 package com.github.hu553in.to_do_list.entity;
 
-import com.github.hu553in.to_do_list.model.TaskStatus;
+import com.github.hu553in.to_do_list.enumeration.TaskStatus;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

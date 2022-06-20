@@ -1,4 +1,4 @@
-package com.github.hu553in.to_do_list.model;
+package com.github.hu553in.to_do_list.enumeration;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,4 +15,5 @@ public enum TaskSortableField {
     public String toString() {
         return fieldName;
     }
+
 }

@@ -2,7 +2,7 @@ package com.github.hu553in.to_do_list.view;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
-import com.github.hu553in.to_do_list.model.TaskStatus;
+import com.github.hu553in.to_do_list.enumeration.TaskStatus;
 
 import java.time.Instant;
 

@@ -1,6 +1,6 @@
 package com.github.hu553in.to_do_list.config;
 
-import com.github.hu553in.to_do_list.model.Authority;
+import com.github.hu553in.to_do_list.enumeration.Authority;
 import com.github.hu553in.to_do_list.security.AuthenticationFailureEntryPoint;
 import com.github.hu553in.to_do_list.security.CustomAccessDeniedHandler;
 import com.github.hu553in.to_do_list.security.CustomAuthenticationFailureHandler;

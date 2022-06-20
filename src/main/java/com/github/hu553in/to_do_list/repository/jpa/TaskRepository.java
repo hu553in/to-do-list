@@ -1,7 +1,7 @@
 package com.github.hu553in.to_do_list.repository.jpa;
 
 import com.github.hu553in.to_do_list.entity.TaskEntity;
-import com.github.hu553in.to_do_list.model.TaskStatus;
+import com.github.hu553in.to_do_list.enumeration.TaskStatus;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

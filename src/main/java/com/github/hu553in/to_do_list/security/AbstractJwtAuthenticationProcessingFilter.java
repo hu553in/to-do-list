@@ -1,6 +1,6 @@
 package com.github.hu553in.to_do_list.security;
 
-import com.github.hu553in.to_do_list.model.Authority;
+import com.github.hu553in.to_do_list.enumeration.Authority;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;

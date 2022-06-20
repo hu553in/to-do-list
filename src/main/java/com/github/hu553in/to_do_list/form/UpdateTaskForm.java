@@ -1,7 +1,7 @@
 package com.github.hu553in.to_do_list.form;
 
 import com.github.hu553in.to_do_list.constraint.NullOrNotBlank;
-import com.github.hu553in.to_do_list.model.TaskStatus;
+import com.github.hu553in.to_do_list.enumeration.TaskStatus;
 
 import javax.validation.constraints.Size;
 

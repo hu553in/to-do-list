@@ -1,8 +1,8 @@
 package com.github.hu553in.to_do_list.service.impl;
 
 import com.github.hu553in.to_do_list.dto.CurrentUserDto;
+import com.github.hu553in.to_do_list.enumeration.Authority;
 import com.github.hu553in.to_do_list.exception.ServerErrorException;
-import com.github.hu553in.to_do_list.model.Authority;
 import com.github.hu553in.to_do_list.service.ICurrentUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
