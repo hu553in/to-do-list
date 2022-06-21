@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @OpenAPIDefinition(info = @Info(
         title = "To-do list",
-        description = "The backend part of an app for managing tasks.<br>" +
+        description = "The backend part of an app for managing tasks. " +
                       "Operations with [ADMIN] description prefix are available only for users with admin rights.",
         contact = @Contact(
                 name = "Ruslan Khasanshin",
