@@ -6,7 +6,6 @@ import com.github.hu553in.to_do_list.exception.JwtValidationException;
 import com.github.hu553in.to_do_list.view.ApiErrorView;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.util.StringUtils;
@@ -46,7 +45,6 @@ public class AbstractAuthenticationFailureProcessor {
         }
         ApiErrorView apiErrorView = ApiErrorView
                 .builder()
-                .status(HttpStatus.UNAUTHORIZED)
                 .message("User is not authorized to access resource")
                 .details(details)
                 .build();

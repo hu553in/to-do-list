@@ -4,6 +4,7 @@ import com.github.hu553in.to_do_list.form.SignInForm;
 import com.github.hu553in.to_do_list.form.SignUpForm;
 import com.github.hu553in.to_do_list.service.IAuthService;
 import com.github.hu553in.to_do_list.view.SignInView;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+@Tag(name = "Auth", description = "The auth API")
 @RestController
 @RequiredArgsConstructor
 public class AuthController {

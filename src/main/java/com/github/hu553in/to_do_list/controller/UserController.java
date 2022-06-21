@@ -2,7 +2,11 @@ package com.github.hu553in.to_do_list.controller;
 
 import com.github.hu553in.to_do_list.form.UpdateUserForm;
 import com.github.hu553in.to_do_list.service.IUserService;
+import com.github.hu553in.to_do_list.util.SwaggerConstants;
 import com.github.hu553in.to_do_list.view.UserView;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
@@ -20,6 +24,7 @@ import javax.validation.Valid;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+@Tag(name = "User", description = "The user API")
 @RestController
 @RequestMapping("/admin/user")
 @RequiredArgsConstructor
@@ -28,6 +33,7 @@ public class UserController {
     private final IUserService userService;
     private final ConversionService conversionService;
 
+    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -39,6 +45,7 @@ public class UserController {
                 .collect(Collectors.toSet());
     }
 
+    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -46,6 +53,7 @@ public class UserController {
         return conversionService.convert(userService.getById(id), UserView.class);
     }
 
+    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable("id") final Integer id, @Valid @RequestBody final UpdateUserForm form) {

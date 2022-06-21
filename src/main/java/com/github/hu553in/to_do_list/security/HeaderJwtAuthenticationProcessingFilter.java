@@ -23,7 +23,7 @@ public class HeaderJwtAuthenticationProcessingFilter extends AbstractJwtAuthenti
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header.startsWith(AUTHORIZATION_HEADER_PREFIX)) {
             String token = StringUtils
-                    .substring(header, AUTHORIZATION_HEADER_PREFIX.length() + 1)
+                    .substring(header, AUTHORIZATION_HEADER_PREFIX.length())
                     .trim();
             if (token.length() > 0) {
                 return token;

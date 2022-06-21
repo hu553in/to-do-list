@@ -6,7 +6,11 @@ import com.github.hu553in.to_do_list.enumeration.TaskStatus;
 import com.github.hu553in.to_do_list.form.CreateTaskForm;
 import com.github.hu553in.to_do_list.form.UpdateTaskForm;
 import com.github.hu553in.to_do_list.service.ITaskService;
+import com.github.hu553in.to_do_list.util.SwaggerConstants;
 import com.github.hu553in.to_do_list.view.TaskView;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Sort;
@@ -30,6 +34,7 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+@Tag(name = "Task", description = "The task API")
 @RestController
 @RequestMapping("/task")
 @RequiredArgsConstructor
@@ -38,6 +43,7 @@ public class TaskController {
     private final ITaskService taskService;
     private final ConversionService conversionService;
 
+    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -52,6 +58,7 @@ public class TaskController {
                 .collect(Collectors.toSet());
     }
 
+    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@Valid @RequestBody final CreateTaskForm form) {
         TaskDto createdTask = taskService.create(form);
@@ -59,6 +66,7 @@ public class TaskController {
         return ResponseEntity.created(location).build();
     }
 
+    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -66,12 +74,14 @@ public class TaskController {
         return conversionService.convert(taskService.getById(id), TaskView.class);
     }
 
+    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void delete(@PathVariable("id") final Integer id) {
         taskService.delete(id);
     }
 
+    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable("id") final Integer id, @Valid @RequestBody final UpdateTaskForm form) {

@@ -4,7 +4,11 @@ import com.github.hu553in.to_do_list.exception.NotFoundException;
 import com.github.hu553in.to_do_list.exception.ServerErrorException;
 import com.github.hu553in.to_do_list.service.ICurrentUserService;
 import com.github.hu553in.to_do_list.service.IUserService;
+import com.github.hu553in.to_do_list.util.SwaggerConstants;
 import com.github.hu553in.to_do_list.view.UserView;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Current user", description = "The current user API")
 @RestController
 @RequestMapping("/me")
 @RequiredArgsConstructor
@@ -24,6 +29,7 @@ public class CurrentUserController {
     private final IUserService userService;
     private final ConversionService conversionService;
 
+    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

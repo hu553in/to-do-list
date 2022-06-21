@@ -5,7 +5,6 @@ import com.github.hu553in.to_do_list.view.ApiErrorView;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -35,7 +34,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         ApiErrorView apiErrorView = ApiErrorView
                 .builder()
-                .status(HttpStatus.FORBIDDEN)
                 .message("User does not have access to resource")
                 .details(List.of())
                 .build();

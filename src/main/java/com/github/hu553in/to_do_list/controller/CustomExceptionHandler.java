@@ -50,7 +50,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .headers(headers)
-                .body(buildApiErrorView(HttpStatus.BAD_REQUEST, message, details));
+                .body(buildApiErrorView(message, details));
     }
 
     @Override
@@ -74,7 +74,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .headers(headers)
-                .body(buildApiErrorView(HttpStatus.BAD_REQUEST, message, details));
+                .body(buildApiErrorView(message, details));
     }
 
     @ExceptionHandler(ConversionFailedException.class)
@@ -97,7 +97,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .append(" to ")
                 .append(e.getTargetType().getName());
         Collection<String> details = List.of(stringBuilder.toString());
-        return buildApiErrorView(HttpStatus.BAD_REQUEST, message, details);
+        return buildApiErrorView(message, details);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -113,7 +113,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                         + ", path " + it.getPropertyPath()
                         + ": " + it.getMessage())
                 .collect(Collectors.toSet());
-        return buildApiErrorView(HttpStatus.BAD_REQUEST, message, details);
+        return buildApiErrorView(message, details);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -127,7 +127,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         Collection<String> details = List.of(requiredType != null
                 ? name + " must be of type " + requiredType.getName()
                 : name + " has invalid type");
-        return buildApiErrorView(HttpStatus.BAD_REQUEST, message, details);
+        return buildApiErrorView(message, details);
     }
 
     @ExceptionHandler(NotFoundException.class)
@@ -136,7 +136,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     public ApiErrorView handleNotFound(final NotFoundException e) {
         String message = "Some entities are not found";
         logger.error(message, e);
-        return buildApiErrorView(HttpStatus.NOT_FOUND, message);
+        return buildApiErrorView(message);
     }
 
     @ExceptionHandler(EmailTakenException.class)
@@ -145,7 +145,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     public ApiErrorView handleEmailTaken(final EmailTakenException e) {
         String message = "Email is already taken";
         logger.error(message, e);
-        return buildApiErrorView(HttpStatus.CONFLICT, message);
+        return buildApiErrorView(message);
     }
 
     @ExceptionHandler(AuthorizationFailedException.class)
@@ -154,7 +154,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     public ApiErrorView handleAuthorizationFailed(final AuthorizationFailedException e) {
         String message = "Authorization is failed";
         logger.error(message, e);
-        return buildApiErrorView(HttpStatus.UNAUTHORIZED, message);
+        return buildApiErrorView(message);
     }
 
     @ExceptionHandler(ServerErrorException.class)
@@ -162,7 +162,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseBody
     public ApiErrorView handleServerError(final ServerErrorException e) {
         logger.error(e);
-        return buildApiErrorView(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown server error");
+        return buildApiErrorView("Unknown server error");
     }
 
     @ExceptionHandler(Exception.class)
@@ -170,22 +170,19 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseBody
     public ApiErrorView handleAnother(final Exception e) {
         logger.error(e);
-        return buildApiErrorView(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown error");
+        return buildApiErrorView("Unknown error");
     }
 
-    private ApiErrorView buildApiErrorView(final HttpStatus status,
-                                           final String message,
-                                           final Collection<String> details) {
+    private ApiErrorView buildApiErrorView(final String message, final Collection<String> details) {
         return ApiErrorView
                 .builder()
-                .status(status)
                 .message(message)
                 .details(details)
                 .build();
     }
 
-    private ApiErrorView buildApiErrorView(final HttpStatus status, final String message) {
-        return buildApiErrorView(status, message, List.of());
+    private ApiErrorView buildApiErrorView(final String message) {
+        return buildApiErrorView(message, List.of());
     }
 
 }
