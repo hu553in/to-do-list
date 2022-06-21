@@ -14,9 +14,9 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
-        String token = String.valueOf(authentication.getCredentials());
+        String jwt = String.valueOf(authentication.getCredentials());
         try {
-            return jwtService.authenticateToken(token);
+            return jwtService.authenticateJwt(jwt);
         } catch (Exception e) {
             throw new JwtAuthenticationException("Invalid JWT", e);
         }

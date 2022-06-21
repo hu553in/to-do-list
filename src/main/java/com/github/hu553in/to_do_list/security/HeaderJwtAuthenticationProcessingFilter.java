@@ -19,17 +19,18 @@ public class HeaderJwtAuthenticationProcessingFilter extends AbstractJwtAuthenti
     }
 
     @Override
-    protected String extractTokenFromRequest(final HttpServletRequest request) throws AuthenticationException {
-        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (header.startsWith(AUTHORIZATION_HEADER_PREFIX)) {
-            String token = StringUtils
-                    .substring(header, AUTHORIZATION_HEADER_PREFIX.length())
+    protected String extractJwtFromRequest(final HttpServletRequest request) throws AuthenticationException {
+        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authorizationHeader.startsWith(AUTHORIZATION_HEADER_PREFIX)) {
+            String jwt = StringUtils
+                    .substring(authorizationHeader, AUTHORIZATION_HEADER_PREFIX.length())
                     .trim();
-            if (token.length() > 0) {
-                return token;
+            if (jwt.length() > 0) {
+                return jwt;
             }
         }
-        throw new JwtAuthenticationException("Invalid " + HttpHeaders.AUTHORIZATION + " header: " + header);
+        throw new JwtAuthenticationException("Invalid " + HttpHeaders.AUTHORIZATION + " header: "
+                + authorizationHeader);
     }
 
 }

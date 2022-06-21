@@ -33,7 +33,7 @@ public class JwtService implements IJwtService {
     private final UserRepository userRepository;
 
     @Override
-    public String buildToken(final UserDto user) {
+    public String buildJwt(final UserDto user) {
         Instant now = Instant.now();
         Date currentDate = Date.from(now);
         Date expirationDate = Date.from(now.plus(jwtConfiguration.getExpiresIn()));
@@ -49,7 +49,7 @@ public class JwtService implements IJwtService {
     }
 
     @Override
-    public Authentication authenticateToken(final String token) {
+    public Authentication authenticateJwt(final String jwt) {
         Algorithm algorithm = Algorithm.HMAC512(jwtConfiguration.getSigningKey());
         DecodedJWT decodedJwt;
         try {
@@ -59,7 +59,7 @@ public class JwtService implements IJwtService {
                     .withClaimPresence(PublicClaims.SUBJECT)
                     .acceptLeeway(jwtConfiguration.getLeewaySeconds())
                     .build()
-                    .verify(token);
+                    .verify(jwt);
         } catch (InvalidClaimException | TokenExpiredException e) {
             String message = e.getMessage();
             throw message != null

@@ -5,7 +5,6 @@ import com.github.hu553in.to_do_list.enumeration.TaskStatus;
 
 import javax.validation.constraints.Size;
 
-public record UpdateTaskForm(
-        @NullOrNotBlank @Size(max = 255) String text,
-        TaskStatus status) {
+public record UpdateTaskForm(@NullOrNotBlank @Size(max = 255) String text,
+                             TaskStatus status) {
 }

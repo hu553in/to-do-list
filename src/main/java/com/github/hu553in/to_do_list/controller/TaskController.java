@@ -6,7 +6,7 @@ import com.github.hu553in.to_do_list.enumeration.TaskStatus;
 import com.github.hu553in.to_do_list.form.CreateTaskForm;
 import com.github.hu553in.to_do_list.form.UpdateTaskForm;
 import com.github.hu553in.to_do_list.service.ITaskService;
-import com.github.hu553in.to_do_list.util.SwaggerConstants;
+import com.github.hu553in.to_do_list.swagger.BearerJwtAuthSecurityScheme;
 import com.github.hu553in.to_do_list.view.TaskView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -43,7 +43,9 @@ public class TaskController {
     private final ITaskService taskService;
     private final ConversionService conversionService;
 
-    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
+    @Operation(
+            summary = "Get all tasks",
+            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -58,7 +60,9 @@ public class TaskController {
                 .collect(Collectors.toSet());
     }
 
-    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
+    @Operation(
+            summary = "Create a task",
+            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@Valid @RequestBody final CreateTaskForm form) {
         TaskDto createdTask = taskService.create(form);
@@ -66,7 +70,9 @@ public class TaskController {
         return ResponseEntity.created(location).build();
     }
 
-    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
+    @Operation(
+            summary = "Get the task by ID",
+            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -74,14 +80,18 @@ public class TaskController {
         return conversionService.convert(taskService.getById(id), TaskView.class);
     }
 
-    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
+    @Operation(
+            summary = "Delete the task",
+            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void delete(@PathVariable("id") final Integer id) {
         taskService.delete(id);
     }
 
-    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
+    @Operation(
+            summary = "Update the task",
+            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable("id") final Integer id, @Valid @RequestBody final UpdateTaskForm form) {

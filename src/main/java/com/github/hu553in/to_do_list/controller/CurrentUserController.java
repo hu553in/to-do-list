@@ -4,7 +4,7 @@ import com.github.hu553in.to_do_list.exception.NotFoundException;
 import com.github.hu553in.to_do_list.exception.ServerErrorException;
 import com.github.hu553in.to_do_list.service.ICurrentUserService;
 import com.github.hu553in.to_do_list.service.IUserService;
-import com.github.hu553in.to_do_list.util.SwaggerConstants;
+import com.github.hu553in.to_do_list.swagger.BearerJwtAuthSecurityScheme;
 import com.github.hu553in.to_do_list.view.UserView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -29,7 +29,9 @@ public class CurrentUserController {
     private final IUserService userService;
     private final ConversionService conversionService;
 
-    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
+    @Operation(
+            summary = "Get the current user",
+            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

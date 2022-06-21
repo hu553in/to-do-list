@@ -9,11 +9,11 @@ public class JwtToAuthenticate extends AbstractAuthenticationToken {
     @Serial
     private static final long serialVersionUID = 7760793506377785329L;
 
-    private final String token;
+    private final String jwt;
 
-    public JwtToAuthenticate(final String token) {
+    public JwtToAuthenticate(final String jwt) {
         super(null);
-        this.token = token;
+        this.jwt = jwt;
         super.setAuthenticated(false);
     }
 
@@ -27,7 +27,7 @@ public class JwtToAuthenticate extends AbstractAuthenticationToken {
 
     @Override
     public Object getCredentials() {
-        return token;
+        return jwt;
     }
 
     @Override

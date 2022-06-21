@@ -2,7 +2,7 @@ package com.github.hu553in.to_do_list.controller;
 
 import com.github.hu553in.to_do_list.form.UpdateUserForm;
 import com.github.hu553in.to_do_list.service.IUserService;
-import com.github.hu553in.to_do_list.util.SwaggerConstants;
+import com.github.hu553in.to_do_list.swagger.BearerJwtAuthSecurityScheme;
 import com.github.hu553in.to_do_list.view.UserView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -33,7 +33,9 @@ public class UserController {
     private final IUserService userService;
     private final ConversionService conversionService;
 
-    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
+    @Operation(
+            summary = "[ADMIN] Get all users",
+            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -45,7 +47,9 @@ public class UserController {
                 .collect(Collectors.toSet());
     }
 
-    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
+    @Operation(
+            summary = "[ADMIN] Get the user by ID",
+            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -53,7 +57,9 @@ public class UserController {
         return conversionService.convert(userService.getById(id), UserView.class);
     }
 
-    @Operation(security = @SecurityRequirement(name = SwaggerConstants.BEARER_JWT_AUTH_SECURITY_SCHEME_NAME))
+    @Operation(
+            summary = "[ADMIN] Update the user",
+            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable("id") final Integer id, @Valid @RequestBody final UpdateUserForm form) {

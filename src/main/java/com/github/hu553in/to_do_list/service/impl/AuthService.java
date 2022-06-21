@@ -30,7 +30,7 @@ public class AuthService implements IAuthService {
                 .findByEmail(form.email())
                 .filter(it -> passwordEncoder.matches(form.password(), it.getPassword()))
                 .orElseThrow(AuthorizationFailedException::new);
-        return jwtService.buildToken(conversionService.convert(user, UserDto.class));
+        return jwtService.buildJwt(conversionService.convert(user, UserDto.class));
     }
 
     @Override
