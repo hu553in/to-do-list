@@ -5,6 +5,7 @@ import com.github.hu553in.to_do_list.exception.EmailTakenException;
 import com.github.hu553in.to_do_list.exception.NotFoundException;
 import com.github.hu553in.to_do_list.exception.ServerErrorException;
 import com.github.hu553in.to_do_list.view.ApiErrorView;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.TypeDescriptor;
@@ -77,6 +78,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(buildApiErrorView(message, details));
     }
 
+    @Hidden
     @ExceptionHandler(ConversionFailedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
@@ -100,6 +102,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildApiErrorView(message, details);
     }
 
+    @Hidden
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
@@ -116,6 +119,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildApiErrorView(message, details);
     }
 
+    @Hidden
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
@@ -130,6 +134,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildApiErrorView(message, details);
     }
 
+    @Hidden
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
@@ -139,6 +144,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildApiErrorView(message);
     }
 
+    @Hidden
     @ExceptionHandler(EmailTakenException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
