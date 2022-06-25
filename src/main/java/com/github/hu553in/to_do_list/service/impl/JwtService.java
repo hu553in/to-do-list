@@ -67,12 +67,14 @@ public class JwtService implements IJwtService {
                     : new JwtValidationException();
         }
         validateDateClaimsNotNull(decodedJwt);
-        Integer userId;
         try {
-            userId = Integer.valueOf(decodedJwt.getSubject());
+            return authenticateUserById(Integer.valueOf(decodedJwt.getSubject()));
         } catch (NumberFormatException e) {
             throw new JwtValidationException("JWT subject must be parseable integer representing user ID");
         }
+    }
+
+    private Authentication authenticateUserById(final Integer userId) {
         UserEntity user = userRepository
                 .findById(userId)
                 .orElseThrow(() -> new NotFoundException("User is not found by ID"));
