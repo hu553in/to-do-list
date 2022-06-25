@@ -67,11 +67,13 @@ public class JwtService implements IJwtService {
                     : new JwtValidationException();
         }
         validateDateClaimsNotNull(decodedJwt);
+        int userId;
         try {
-            return authenticateUserById(Integer.valueOf(decodedJwt.getSubject()));
+            userId = Integer.parseInt(decodedJwt.getSubject());
         } catch (NumberFormatException e) {
             throw new JwtValidationException("JWT subject must be parseable integer representing user ID");
         }
+        return authenticateUserById(userId);
     }
 
     private Authentication authenticateUserById(final Integer userId) {
