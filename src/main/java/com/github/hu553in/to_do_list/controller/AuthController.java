@@ -3,8 +3,12 @@ package com.github.hu553in.to_do_list.controller;
 import com.github.hu553in.to_do_list.form.SignInForm;
 import com.github.hu553in.to_do_list.form.SignUpForm;
 import com.github.hu553in.to_do_list.service.IAuthService;
+import com.github.hu553in.to_do_list.view.ApiErrorView;
 import com.github.hu553in.to_do_list.view.JwtView;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +28,14 @@ public class AuthController {
 
     private final IAuthService authService;
 
-    @Operation(summary = "Sign in")
+    @Operation(
+            summary = "Sign in",
+            responses = {
+                    @ApiResponse(responseCode = "200", useReturnTypeSchema = true),
+                    @ApiResponse(
+                            responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ApiErrorView.class)))
+            })
     @PostMapping(value = "/sign-in",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -34,7 +45,18 @@ public class AuthController {
         return new JwtView(authService.signIn(form));
     }
 
-    @Operation(summary = "Sign up")
+    @Operation(
+            summary = "Sign up",
+            responses = {
+                    @ApiResponse(responseCode = "204"),
+                    @ApiResponse(
+                            responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ApiErrorView.class))),
+                    @ApiResponse(
+                            responseCode = "409",
+                            description = "Email is already taken",
+                            content = @Content(schema = @Schema(implementation = ApiErrorView.class)))
+            })
     @PostMapping(value = "/sign-up", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void signUp(@Valid @RequestBody final SignUpForm form) {

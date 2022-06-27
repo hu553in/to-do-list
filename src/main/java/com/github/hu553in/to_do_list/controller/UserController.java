@@ -3,8 +3,12 @@ package com.github.hu553in.to_do_list.controller;
 import com.github.hu553in.to_do_list.form.UpdateUserForm;
 import com.github.hu553in.to_do_list.service.IUserService;
 import com.github.hu553in.to_do_list.swagger.BearerJwtAuthSecurityScheme;
+import com.github.hu553in.to_do_list.view.ApiErrorView;
 import com.github.hu553in.to_do_list.view.UserView;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +53,16 @@ public class UserController {
 
     @Operation(
             summary = "[ADMIN] Get the user by ID",
-            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
+            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME),
+            responses = {
+                    @ApiResponse(responseCode = "200"),
+                    @ApiResponse(
+                            responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ApiErrorView.class))),
+                    @ApiResponse(
+                            responseCode = "404",
+                            content = @Content(schema = @Schema(implementation = ApiErrorView.class)))
+            })
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -59,7 +72,20 @@ public class UserController {
 
     @Operation(
             summary = "[ADMIN] Update the user",
-            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
+            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME),
+            responses = {
+                    @ApiResponse(responseCode = "204"),
+                    @ApiResponse(
+                            responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ApiErrorView.class))),
+                    @ApiResponse(
+                            responseCode = "404",
+                            content = @Content(schema = @Schema(implementation = ApiErrorView.class))),
+                    @ApiResponse(
+                            responseCode = "409",
+                            description = "Email is already taken",
+                            content = @Content(schema = @Schema(implementation = ApiErrorView.class)))
+            })
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable("id") final Integer id, @Valid @RequestBody final UpdateUserForm form) {

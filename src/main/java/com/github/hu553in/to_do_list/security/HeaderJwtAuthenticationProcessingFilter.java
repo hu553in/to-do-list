@@ -30,7 +30,7 @@ public class HeaderJwtAuthenticationProcessingFilter extends AbstractJwtAuthenti
             }
         }
         throw new JwtAuthenticationException("Invalid " + HttpHeaders.AUTHORIZATION + " header: "
-                + authorizationHeader);
+                                             + authorizationHeader);
     }
 
 }

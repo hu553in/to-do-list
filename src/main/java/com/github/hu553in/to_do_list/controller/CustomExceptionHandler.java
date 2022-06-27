@@ -113,8 +113,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .getConstraintViolations()
                 .stream()
                 .map(it -> "Root bean " + it.getRootBeanClass().getName()
-                        + ", path " + it.getPropertyPath()
-                        + ": " + it.getMessage())
+                           + ", path " + it.getPropertyPath()
+                           + ": " + it.getMessage())
                 .collect(Collectors.toSet());
         return buildApiErrorView(message, details);
     }
@@ -154,6 +154,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildApiErrorView(message);
     }
 
+    @Hidden
     @ExceptionHandler(AuthorizationFailedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ResponseBody

@@ -7,8 +7,13 @@ import com.github.hu553in.to_do_list.form.CreateTaskForm;
 import com.github.hu553in.to_do_list.form.UpdateTaskForm;
 import com.github.hu553in.to_do_list.service.ITaskService;
 import com.github.hu553in.to_do_list.swagger.BearerJwtAuthSecurityScheme;
+import com.github.hu553in.to_do_list.view.ApiErrorView;
 import com.github.hu553in.to_do_list.view.TaskView;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +50,13 @@ public class TaskController {
 
     @Operation(
             summary = "Get all tasks",
-            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
+            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME),
+            responses = {
+                    @ApiResponse(responseCode = "200"),
+                    @ApiResponse(
+                            responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ApiErrorView.class)))
+            })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -62,7 +73,19 @@ public class TaskController {
 
     @Operation(
             summary = "Create a task",
-            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
+            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            content = @Content,
+                            headers = @Header(
+                                    name = "Location",
+                                    description = "The location of the created task",
+                                    schema = @Schema(type = "string", example = "/task/1"))),
+                    @ApiResponse(
+                            responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ApiErrorView.class)))
+            })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@Valid @RequestBody final CreateTaskForm form) {
         TaskDto createdTask = taskService.create(form);
@@ -72,7 +95,16 @@ public class TaskController {
 
     @Operation(
             summary = "Get the task by ID",
-            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
+            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME),
+            responses = {
+                    @ApiResponse(responseCode = "200"),
+                    @ApiResponse(
+                            responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ApiErrorView.class))),
+                    @ApiResponse(
+                            responseCode = "404",
+                            content = @Content(schema = @Schema(implementation = ApiErrorView.class)))
+            })
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -82,16 +114,34 @@ public class TaskController {
 
     @Operation(
             summary = "Delete the task",
-            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
+            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME),
+            responses = {
+                    @ApiResponse(responseCode = "204"),
+                    @ApiResponse(
+                            responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ApiErrorView.class))),
+                    @ApiResponse(
+                            responseCode = "404",
+                            content = @Content(schema = @Schema(implementation = ApiErrorView.class)))
+            })
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") final Integer id) {
         taskService.delete(id);
     }
 
     @Operation(
             summary = "Update the task",
-            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
+            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME),
+            responses = {
+                    @ApiResponse(responseCode = "204"),
+                    @ApiResponse(
+                            responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ApiErrorView.class))),
+                    @ApiResponse(
+                            responseCode = "404",
+                            content = @Content(schema = @Schema(implementation = ApiErrorView.class)))
+            })
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable("id") final Integer id, @Valid @RequestBody final UpdateTaskForm form) {

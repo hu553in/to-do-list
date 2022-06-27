@@ -23,3 +23,6 @@ jwt:
   signing-key: ${JWT_SIGNING_KEY}
   duration-minutes: ${JWT_DURATION_MINUTES}
   leeway-seconds: ${JWT_LEEWAY_SECONDS}
+
+springdoc:
+  default-produces-media-type: application/json
