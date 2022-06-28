@@ -31,7 +31,7 @@ public class AuthController {
     @Operation(
             summary = "Sign in",
             responses = {
-                    @ApiResponse(responseCode = "200", useReturnTypeSchema = true),
+                    @ApiResponse(responseCode = "200"),
                     @ApiResponse(
                             responseCode = "400",
                             content = @Content(schema = @Schema(implementation = ApiErrorView.class)))

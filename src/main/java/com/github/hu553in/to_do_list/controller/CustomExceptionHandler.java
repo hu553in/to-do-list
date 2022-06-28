@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Hidden
 @RestControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -78,7 +79,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(buildApiErrorView(message, details));
     }
 
-    @Hidden
     @ExceptionHandler(ConversionFailedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
@@ -102,7 +102,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildApiErrorView(message, details);
     }
 
-    @Hidden
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
@@ -119,7 +118,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildApiErrorView(message, details);
     }
 
-    @Hidden
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
@@ -134,7 +132,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildApiErrorView(message, details);
     }
 
-    @Hidden
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
@@ -144,7 +141,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildApiErrorView(message);
     }
 
-    @Hidden
     @ExceptionHandler(EmailTakenException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
@@ -154,7 +150,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildApiErrorView(message);
     }
 
-    @Hidden
     @ExceptionHandler(AuthorizationFailedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ResponseBody
