@@ -2,7 +2,7 @@ package com.github.hu553in.to_do_list.controller;
 
 import com.github.hu553in.to_do_list.exception.AuthorizationFailedException;
 import com.github.hu553in.to_do_list.exception.EmailTakenException;
-import com.github.hu553in.to_do_list.exception.InvalidSortPropertyException;
+import com.github.hu553in.to_do_list.exception.SortPropertyNotFoundException;
 import com.github.hu553in.to_do_list.exception.NotFoundException;
 import com.github.hu553in.to_do_list.exception.ServerErrorException;
 import com.github.hu553in.to_do_list.view.ApiErrorView;
@@ -73,7 +73,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .append(e.getPropertyName())
                 .append(" with value ")
                 .append(e.getValue())
-                .append(requiredType != null ? " to " + requiredType.getName() : " to required type")
+                .append(requiredType != null ? " to " + requiredType.getCanonicalName() : " to required type")
                 .append(" is not supported");
         Collection<String> details = List.of(stringBuilder.toString());
         return ResponseEntity
@@ -82,11 +82,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(buildApiErrorView(message, details));
     }
 
-    @ExceptionHandler(InvalidSortPropertyException.class)
+    @ExceptionHandler(SortPropertyNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ApiErrorView handleInvalidSortProperty(final InvalidSortPropertyException e) {
-        String message = "Some sort properties are not valid";
+    public ApiErrorView handleSortPropertyNotFound(final SortPropertyNotFoundException e) {
+        String message = "Some sort properties are not found";
         logger.error(message, e);
         Collection<String> details = new ArrayList<>();
         if (e.getCause() instanceof PropertyReferenceException cause) {
@@ -127,7 +127,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         Collection<String> details = e
                 .getConstraintViolations()
                 .stream()
-                .map(it -> "Root bean " + it.getRootBeanClass().getName()
+                .map(it -> "Root bean " + it.getRootBeanClass().getCanonicalName()
                            + ", path " + it.getPropertyPath()
                            + ": " + it.getMessage())
                 .collect(Collectors.toSet());
@@ -143,7 +143,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         Class<?> requiredType = e.getRequiredType();
         String name = e.getName();
         Collection<String> details = List.of(requiredType != null
-                ? name + " must be of type " + requiredType.getName()
+                ? name + " must be of type " + requiredType.getCanonicalName()
                 : name + " has invalid type");
         return buildApiErrorView(message, details);
     }

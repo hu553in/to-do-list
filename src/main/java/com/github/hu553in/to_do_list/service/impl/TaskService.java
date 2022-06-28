@@ -4,7 +4,7 @@ import com.github.hu553in.to_do_list.dto.TaskDto;
 import com.github.hu553in.to_do_list.entity.TaskEntity;
 import com.github.hu553in.to_do_list.entity.UserEntity;
 import com.github.hu553in.to_do_list.enumeration.TaskStatus;
-import com.github.hu553in.to_do_list.exception.InvalidSortPropertyException;
+import com.github.hu553in.to_do_list.exception.SortPropertyNotFoundException;
 import com.github.hu553in.to_do_list.exception.NotFoundException;
 import com.github.hu553in.to_do_list.exception.ServerErrorException;
 import com.github.hu553in.to_do_list.form.CreateTaskForm;
@@ -40,7 +40,7 @@ public class TaskService implements ITaskService {
                     .findAllByStatusAndOwnerId(status, currentUserId, pageable)
                     .map(it -> conversionService.convert(it, TaskDto.class));
         } catch (PropertyReferenceException e) {
-            throw new InvalidSortPropertyException(e);
+            throw new SortPropertyNotFoundException(e);
         }
     }
 
