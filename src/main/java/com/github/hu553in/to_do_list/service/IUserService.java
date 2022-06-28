@@ -7,10 +7,10 @@ import java.util.Collection;
 
 public interface IUserService {
 
-    Collection<UserDto> findAll();
+    Collection<UserDto> getAll();
 
     UserDto getById(Integer id);
 
-    void update(Integer id, UpdateUserForm form);
+    void updateById(Integer id, UpdateUserForm form);
 
 }

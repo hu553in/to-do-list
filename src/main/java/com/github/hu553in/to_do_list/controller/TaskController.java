@@ -1,7 +1,6 @@
 package com.github.hu553in.to_do_list.controller;
 
 import com.github.hu553in.to_do_list.dto.TaskDto;
-import com.github.hu553in.to_do_list.enumeration.TaskSortableField;
 import com.github.hu553in.to_do_list.enumeration.TaskStatus;
 import com.github.hu553in.to_do_list.form.CreateTaskForm;
 import com.github.hu553in.to_do_list.form.UpdateTaskForm;
@@ -17,8 +16,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +39,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 @Tag(name = "Task", description = "The task API")
 @RestController
@@ -60,15 +61,15 @@ public class TaskController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Collection<TaskView> getAll(
+    public Page<TaskView> getPageByStatus(
             @RequestParam(value = "status", defaultValue = "TO_DO") final TaskStatus status,
-            @RequestParam(value = "sortBy", defaultValue = "TEXT") final TaskSortableField sortBy,
-            @RequestParam(value = "sortDirection", defaultValue = "ASC") final Sort.Direction sortDirection) {
+            @ParameterObject @PageableDefault(
+                    size = 25,
+                    sort = "text",
+                    direction = Sort.Direction.ASC) final Pageable pageable) {
         return taskService
-                .getAll(status, sortBy, sortDirection)
-                .stream()
-                .map(it -> conversionService.convert(it, TaskView.class))
-                .collect(Collectors.toSet());
+                .getPageByStatus(status, pageable)
+                .map(it -> conversionService.convert(it, TaskView.class));
     }
 
     @Operation(
@@ -126,8 +127,8 @@ public class TaskController {
             })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable("id") final Integer id) {
-        taskService.delete(id);
+    public void deleteById(@PathVariable("id") final Integer id) {
+        taskService.deleteById(id);
     }
 
     @Operation(
@@ -144,8 +145,8 @@ public class TaskController {
             })
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable("id") final Integer id, @Valid @RequestBody final UpdateTaskForm form) {
-        taskService.update(id, form);
+    public void updateById(@PathVariable("id") final Integer id, @Valid @RequestBody final UpdateTaskForm form) {
+        taskService.updateById(id, form);
     }
 
 }

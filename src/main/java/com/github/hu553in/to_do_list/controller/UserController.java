@@ -45,7 +45,7 @@ public class UserController {
     @ResponseBody
     public Collection<UserView> getAll() {
         return userService
-                .findAll()
+                .getAll()
                 .stream()
                 .map(it -> conversionService.convert(it, UserView.class))
                 .collect(Collectors.toSet());
@@ -89,7 +89,7 @@ public class UserController {
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable("id") final Integer id, @Valid @RequestBody final UpdateUserForm form) {
-        userService.update(id, form);
+        userService.updateById(id, form);
     }
 
 }

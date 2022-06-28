@@ -26,7 +26,7 @@ public class UserService implements IUserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Collection<UserDto> findAll() {
+    public Collection<UserDto> getAll() {
         return userRepository
                 .findAll()
                 .stream()
@@ -44,7 +44,7 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
-    public void update(final Integer id, final UpdateUserForm form) {
+    public void updateById(final Integer id, final UpdateUserForm form) {
         UserEntity user = userRepository
                 .findById(id)
                 .orElseThrow(NotFoundException::new);

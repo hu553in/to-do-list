@@ -2,6 +2,7 @@ package com.github.hu553in.to_do_list.controller;
 
 import com.github.hu553in.to_do_list.exception.AuthorizationFailedException;
 import com.github.hu553in.to_do_list.exception.EmailTakenException;
+import com.github.hu553in.to_do_list.exception.InvalidSortPropertyException;
 import com.github.hu553in.to_do_list.exception.NotFoundException;
 import com.github.hu553in.to_do_list.exception.ServerErrorException;
 import com.github.hu553in.to_do_list.view.ApiErrorView;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.TypeDescriptor;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -77,6 +80,19 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .headers(headers)
                 .body(buildApiErrorView(message, details));
+    }
+
+    @ExceptionHandler(InvalidSortPropertyException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ApiErrorView handleInvalidSortProperty(final InvalidSortPropertyException e) {
+        String message = "Some sort properties are not valid";
+        logger.error(message, e);
+        Collection<String> details = new ArrayList<>();
+        if (e.getCause() instanceof PropertyReferenceException cause) {
+            details.add("Sort property " + cause.getPropertyName() + " is not found");
+        }
+        return buildApiErrorView(message, details);
     }
 
     @ExceptionHandler(ConversionFailedException.class)

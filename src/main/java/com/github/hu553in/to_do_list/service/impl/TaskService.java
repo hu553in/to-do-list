@@ -3,8 +3,8 @@ package com.github.hu553in.to_do_list.service.impl;
 import com.github.hu553in.to_do_list.dto.TaskDto;
 import com.github.hu553in.to_do_list.entity.TaskEntity;
 import com.github.hu553in.to_do_list.entity.UserEntity;
-import com.github.hu553in.to_do_list.enumeration.TaskSortableField;
 import com.github.hu553in.to_do_list.enumeration.TaskStatus;
+import com.github.hu553in.to_do_list.exception.InvalidSortPropertyException;
 import com.github.hu553in.to_do_list.exception.NotFoundException;
 import com.github.hu553in.to_do_list.exception.ServerErrorException;
 import com.github.hu553in.to_do_list.form.CreateTaskForm;
@@ -15,13 +15,13 @@ import com.github.hu553in.to_do_list.service.ICurrentUserService;
 import com.github.hu553in.to_do_list.service.ITaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,16 +33,15 @@ public class TaskService implements ITaskService {
     private final ConversionService conversionService;
 
     @Override
-    public Collection<TaskDto> getAll(final TaskStatus status,
-                                      final TaskSortableField sortBy,
-                                      final Sort.Direction sortDirection) {
-        Sort sort = Sort.by(sortDirection, sortBy.toString());
+    public Page<TaskDto> getPageByStatus(final TaskStatus status, final Pageable pageable) {
         Integer currentUserId = currentUserService.getCurrentUser().id();
-        return taskRepository
-                .findAllByStatusAndOwnerId(status, currentUserId, sort)
-                .stream()
-                .map(it -> conversionService.convert(it, TaskDto.class))
-                .collect(Collectors.toSet());
+        try {
+            return taskRepository
+                    .findAllByStatusAndOwnerId(status, currentUserId, pageable)
+                    .map(it -> conversionService.convert(it, TaskDto.class));
+        } catch (PropertyReferenceException e) {
+            throw new InvalidSortPropertyException(e);
+        }
     }
 
     @Override
@@ -69,7 +68,7 @@ public class TaskService implements ITaskService {
 
     @Override
     @Transactional
-    public void update(final Integer id, final UpdateTaskForm form) {
+    public void updateById(final Integer id, final UpdateTaskForm form) {
         Integer currentUserId = currentUserService.getCurrentUser().id();
         TaskEntity task = taskRepository
                 .findByIdAndOwnerId(id, currentUserId)
@@ -85,7 +84,7 @@ public class TaskService implements ITaskService {
 
     @Override
     @Transactional
-    public void delete(final Integer id) {
+    public void deleteById(final Integer id) {
         Integer currentUserId = currentUserService.getCurrentUser().id();
         taskRepository
                 .deleteByIdAndOwnerId(id, currentUserId)
