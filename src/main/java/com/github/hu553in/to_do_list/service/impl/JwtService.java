@@ -1,10 +1,9 @@
 package com.github.hu553in.to_do_list.service.impl;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.RegisteredClaims;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.InvalidClaimException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.auth0.jwt.impl.PublicClaims;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.github.hu553in.to_do_list.config.JwtConfiguration;
 import com.github.hu553in.to_do_list.dto.UserDto;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 
 @Service
@@ -35,38 +33,21 @@ public class JwtService implements IJwtService {
     @Override
     public String buildJwt(final UserDto user) {
         Instant now = Instant.now();
-        Date currentDate = Date.from(now);
-        Date expirationDate = Date.from(now.plus(jwtConfiguration.getExpiresIn()));
+        Instant expiresAt = now.plus(jwtConfiguration.getExpiresIn());
         Algorithm algorithm = Algorithm.HMAC512(jwtConfiguration.getSigningKey());
         return JWT
                 .create()
                 .withIssuer(jwtConfiguration.getIssuer())
-                .withIssuedAt(currentDate)
-                .withNotBefore(currentDate)
+                .withIssuedAt(now)
+                .withNotBefore(now)
                 .withSubject(String.valueOf(user.id()))
-                .withExpiresAt(expirationDate)
+                .withExpiresAt(expiresAt)
                 .sign(algorithm);
     }
 
     @Override
     public Authentication authenticateJwt(final String jwt) {
-        Algorithm algorithm = Algorithm.HMAC512(jwtConfiguration.getSigningKey());
-        DecodedJWT decodedJwt;
-        try {
-            decodedJwt = JWT
-                    .require(algorithm)
-                    .withIssuer(jwtConfiguration.getIssuer())
-                    .withClaimPresence(PublicClaims.SUBJECT)
-                    .acceptLeeway(jwtConfiguration.getLeewaySeconds())
-                    .build()
-                    .verify(jwt);
-        } catch (InvalidClaimException | TokenExpiredException e) {
-            String message = e.getMessage();
-            throw message != null
-                    ? new JwtValidationException(message)
-                    : new JwtValidationException();
-        }
-        validateDateClaimsNotNull(decodedJwt);
+        DecodedJWT decodedJwt = decodeAndVerifyJwt(jwt);
         int userId;
         try {
             userId = Integer.parseInt(decodedJwt.getSubject());
@@ -74,6 +55,27 @@ public class JwtService implements IJwtService {
             throw new JwtValidationException("JWT subject must be parseable integer representing user ID");
         }
         return authenticateUserById(userId);
+    }
+
+    private DecodedJWT decodeAndVerifyJwt(final String jwt) {
+        Algorithm algorithm = Algorithm.HMAC512(jwtConfiguration.getSigningKey());
+        try {
+            return JWT
+                    .require(algorithm)
+                    .withIssuer(jwtConfiguration.getIssuer())
+                    .withClaimPresence(RegisteredClaims.SUBJECT)
+                    .withClaimPresence(RegisteredClaims.ISSUED_AT)
+                    .withClaimPresence(RegisteredClaims.NOT_BEFORE)
+                    .withClaimPresence(RegisteredClaims.EXPIRES_AT)
+                    .acceptLeeway(jwtConfiguration.getLeewaySeconds())
+                    .build()
+                    .verify(jwt);
+        } catch (JWTVerificationException e) {
+            String message = e.getMessage();
+            throw message != null
+                    ? new JwtValidationException(message)
+                    : new JwtValidationException();
+        }
     }
 
     private Authentication authenticateUserById(final Integer userId) {
@@ -86,19 +88,6 @@ public class JwtService implements IJwtService {
             authorities.add(Authority.ROLE_ADMIN::toString);
         }
         return new AuthenticatedUser(userId, authorities);
-    }
-
-    // TODO: probably this should be changed in future, see https://github.com/auth0/java-jwt/issues/558
-    private void validateDateClaimsNotNull(final DecodedJWT decodedJWT) {
-        validateClaimNotNull(decodedJWT.getIssuedAt(), PublicClaims.ISSUED_AT);
-        validateClaimNotNull(decodedJWT.getNotBefore(), PublicClaims.NOT_BEFORE);
-        validateClaimNotNull(decodedJWT.getExpiresAt(), PublicClaims.EXPIRES_AT);
-    }
-
-    private void validateClaimNotNull(final Object claim, final String claimName) {
-        if (claim == null) {
-            throw new JwtValidationException("JWT " + claimName + " claim must be not null");
-        }
     }
 
 }
