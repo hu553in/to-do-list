@@ -1,6 +1,8 @@
 package com.github.hu553in.to_do_list.controller;
 
+import com.github.hu553in.to_do_list.dto.CreateTaskDto;
 import com.github.hu553in.to_do_list.dto.TaskDto;
+import com.github.hu553in.to_do_list.dto.UpdateTaskDto;
 import com.github.hu553in.to_do_list.enumeration.TaskStatus;
 import com.github.hu553in.to_do_list.form.CreateTaskForm;
 import com.github.hu553in.to_do_list.form.UpdateTaskForm;
@@ -39,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.text.MessageFormat;
 
 @Tag(name = "Task", description = "The task API")
 @RestController
@@ -89,8 +92,8 @@ public class TaskController {
             })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@Valid @RequestBody final CreateTaskForm form) {
-        TaskDto createdTask = taskService.create(form);
-        URI location = URI.create("/task/" + createdTask.id());
+        TaskDto createdTask = taskService.create(conversionService.convert(form, CreateTaskDto.class));
+        URI location = URI.create(MessageFormat.format("/task/{0}", createdTask.id()));
         return ResponseEntity.created(location).build();
     }
 
@@ -146,7 +149,7 @@ public class TaskController {
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateById(@PathVariable("id") final Integer id, @Valid @RequestBody final UpdateTaskForm form) {
-        taskService.updateById(id, form);
+        taskService.updateById(id, conversionService.convert(form, UpdateTaskDto.class));
     }
 
 }

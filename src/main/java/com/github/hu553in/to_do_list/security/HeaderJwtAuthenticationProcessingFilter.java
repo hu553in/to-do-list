@@ -7,6 +7,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.MessageFormat;
 
 import static org.springframework.security.oauth2.core.OAuth2AccessToken.TokenType;
 
@@ -29,8 +30,10 @@ public class HeaderJwtAuthenticationProcessingFilter extends AbstractJwtAuthenti
                 return jwt;
             }
         }
-        throw new JwtAuthenticationException("Invalid " + HttpHeaders.AUTHORIZATION + " header: "
-                                             + authorizationHeader);
+        throw new JwtAuthenticationException(MessageFormat.format(
+                "Invalid {0} header: {1}",
+                HttpHeaders.AUTHORIZATION,
+                authorizationHeader));
     }
 
 }

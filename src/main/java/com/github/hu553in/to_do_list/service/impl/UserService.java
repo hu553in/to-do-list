@@ -1,10 +1,10 @@
 package com.github.hu553in.to_do_list.service.impl;
 
+import com.github.hu553in.to_do_list.dto.UpdateUserDto;
 import com.github.hu553in.to_do_list.dto.UserDto;
 import com.github.hu553in.to_do_list.entity.UserEntity;
 import com.github.hu553in.to_do_list.exception.EmailTakenException;
 import com.github.hu553in.to_do_list.exception.NotFoundException;
-import com.github.hu553in.to_do_list.form.UpdateUserForm;
 import com.github.hu553in.to_do_list.repository.jpa.UserRepository;
 import com.github.hu553in.to_do_list.service.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -44,12 +44,12 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
-    public void updateById(final Integer id, final UpdateUserForm form) {
+    public void updateById(final Integer id, final UpdateUserDto dto) {
         UserEntity user = userRepository
                 .findById(id)
                 .orElseThrow(NotFoundException::new);
         Optional
-                .ofNullable(form.email())
+                .ofNullable(dto.email())
                 .ifPresent(it -> {
                     if (userRepository.findByEmail(it).isPresent()) {
                         throw new EmailTakenException();
@@ -57,10 +57,10 @@ public class UserService implements IUserService {
                     user.setEmail(it);
                 });
         Optional
-                .ofNullable(form.password())
+                .ofNullable(dto.password())
                 .ifPresent(it -> user.setPassword(passwordEncoder.encode(it)));
         Optional
-                .ofNullable(form.admin())
+                .ofNullable(dto.admin())
                 .ifPresent(user::setAdmin);
         userRepository.saveAndFlush(user);
     }

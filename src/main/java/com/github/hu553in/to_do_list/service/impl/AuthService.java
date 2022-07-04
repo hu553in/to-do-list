@@ -1,11 +1,11 @@
 package com.github.hu553in.to_do_list.service.impl;
 
+import com.github.hu553in.to_do_list.dto.SignInDto;
+import com.github.hu553in.to_do_list.dto.SignUpDto;
 import com.github.hu553in.to_do_list.dto.UserDto;
 import com.github.hu553in.to_do_list.entity.UserEntity;
 import com.github.hu553in.to_do_list.exception.AuthorizationFailedException;
 import com.github.hu553in.to_do_list.exception.EmailTakenException;
-import com.github.hu553in.to_do_list.form.SignInForm;
-import com.github.hu553in.to_do_list.form.SignUpForm;
 import com.github.hu553in.to_do_list.repository.jpa.UserRepository;
 import com.github.hu553in.to_do_list.service.IAuthService;
 import com.github.hu553in.to_do_list.service.IJwtService;
@@ -25,24 +25,24 @@ public class AuthService implements IAuthService {
     private final ConversionService conversionService;
 
     @Override
-    public String signIn(final SignInForm form) {
+    public String signIn(final SignInDto dto) {
         UserEntity user = userRepository
-                .findByEmail(form.email())
-                .filter(it -> passwordEncoder.matches(form.password(), it.getPassword()))
+                .findByEmail(dto.email())
+                .filter(it -> passwordEncoder.matches(dto.password(), it.getPassword()))
                 .orElseThrow(AuthorizationFailedException::new);
         return jwtService.buildJwt(conversionService.convert(user, UserDto.class));
     }
 
     @Override
     @Transactional
-    public void signUp(final SignUpForm form) {
-        String email = form.email();
+    public void signUp(final SignUpDto dto) {
+        String email = dto.email();
         if (userRepository.findByEmail(email).isPresent()) {
             throw new EmailTakenException();
         }
         UserEntity user = new UserEntity();
         user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(form.password()));
+        user.setPassword(passwordEncoder.encode(dto.password()));
         userRepository.saveAndFlush(user);
     }
 

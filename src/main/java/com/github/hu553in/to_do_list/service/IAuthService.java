@@ -1,12 +1,12 @@
 package com.github.hu553in.to_do_list.service;
 
-import com.github.hu553in.to_do_list.form.SignInForm;
-import com.github.hu553in.to_do_list.form.SignUpForm;
+import com.github.hu553in.to_do_list.dto.SignInDto;
+import com.github.hu553in.to_do_list.dto.SignUpDto;
 
 public interface IAuthService {
 
-    String signIn(SignInForm signInForm);
+    String signIn(SignInDto dto);
 
-    void signUp(SignUpForm signUpForm);
+    void signUp(SignUpDto dto);
 
 }

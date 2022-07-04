@@ -2,9 +2,9 @@ package com.github.hu553in.to_do_list.controller;
 
 import com.github.hu553in.to_do_list.exception.AuthorizationFailedException;
 import com.github.hu553in.to_do_list.exception.EmailTakenException;
-import com.github.hu553in.to_do_list.exception.SortPropertyNotFoundException;
 import com.github.hu553in.to_do_list.exception.NotFoundException;
 import com.github.hu553in.to_do_list.exception.ServerErrorException;
+import com.github.hu553in.to_do_list.exception.SortPropertyNotFoundException;
 import com.github.hu553in.to_do_list.view.ApiErrorView;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.ConversionNotSupportedException;
@@ -26,6 +26,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -48,10 +49,16 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         BindingResult bindingResult = e.getBindingResult();
         bindingResult
                 .getFieldErrors()
-                .forEach(it -> details.add(it.getField() + ": " + it.getDefaultMessage()));
+                .forEach(it -> details.add(MessageFormat.format(
+                        "{0}: {1}",
+                        it.getField(),
+                        it.getDefaultMessage())));
         bindingResult
                 .getGlobalErrors()
-                .forEach(it -> details.add(it.getObjectName() + ": " + it.getDefaultMessage()));
+                .forEach(it -> details.add(MessageFormat.format(
+                        "{0}: {1}",
+                        it.getObjectName(),
+                        it.getDefaultMessage())));
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .headers(headers)
@@ -73,7 +80,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .append(e.getPropertyName())
                 .append(" with value ")
                 .append(e.getValue())
-                .append(requiredType != null ? " to " + requiredType.getCanonicalName() : " to required type")
+                .append(requiredType != null
+                        ? MessageFormat.format(" to {0}", requiredType.getCanonicalName())
+                        : " to required type")
                 .append(" is not supported");
         Collection<String> details = List.of(stringBuilder.toString());
         return ResponseEntity
@@ -90,7 +99,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         logger.error(message, e);
         Collection<String> details = new ArrayList<>();
         if (e.getCause() instanceof PropertyReferenceException cause) {
-            details.add("Sort property " + cause.getPropertyName() + " is not found");
+            details.add(MessageFormat.format(
+                    "Sort property {0} is not found",
+                    cause.getPropertyName()));
         }
         return buildApiErrorView(message, details);
     }
@@ -127,9 +138,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         Collection<String> details = e
                 .getConstraintViolations()
                 .stream()
-                .map(it -> "Root bean " + it.getRootBeanClass().getCanonicalName()
-                           + ", path " + it.getPropertyPath()
-                           + ": " + it.getMessage())
+                .map(it -> MessageFormat.format(
+                        "Root bean {0}, path {1}: {2}",
+                        it.getRootBeanClass().getCanonicalName(),
+                        it.getPropertyPath(),
+                        it.getMessage()))
                 .collect(Collectors.toSet());
         return buildApiErrorView(message, details);
     }
@@ -143,8 +156,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         Class<?> requiredType = e.getRequiredType();
         String name = e.getName();
         Collection<String> details = List.of(requiredType != null
-                ? name + " must be of type " + requiredType.getCanonicalName()
-                : name + " has invalid type");
+                ? MessageFormat.format("{0} must be of type {1}", name, requiredType.getCanonicalName())
+                : MessageFormat.format("{0} has invalid type", name));
         return buildApiErrorView(message, details);
     }
 

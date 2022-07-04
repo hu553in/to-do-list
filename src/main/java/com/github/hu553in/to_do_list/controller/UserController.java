@@ -1,5 +1,6 @@
 package com.github.hu553in.to_do_list.controller;
 
+import com.github.hu553in.to_do_list.dto.UpdateUserDto;
 import com.github.hu553in.to_do_list.form.UpdateUserForm;
 import com.github.hu553in.to_do_list.service.IUserService;
 import com.github.hu553in.to_do_list.swagger.BearerJwtAuthSecurityScheme;
@@ -89,7 +90,7 @@ public class UserController {
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable("id") final Integer id, @Valid @RequestBody final UpdateUserForm form) {
-        userService.updateById(id, form);
+        userService.updateById(id, conversionService.convert(form, UpdateUserDto.class));
     }
 
 }

@@ -1,14 +1,14 @@
 package com.github.hu553in.to_do_list.service.impl;
 
+import com.github.hu553in.to_do_list.dto.CreateTaskDto;
 import com.github.hu553in.to_do_list.dto.TaskDto;
+import com.github.hu553in.to_do_list.dto.UpdateTaskDto;
 import com.github.hu553in.to_do_list.entity.TaskEntity;
 import com.github.hu553in.to_do_list.entity.UserEntity;
 import com.github.hu553in.to_do_list.enumeration.TaskStatus;
-import com.github.hu553in.to_do_list.exception.SortPropertyNotFoundException;
 import com.github.hu553in.to_do_list.exception.NotFoundException;
 import com.github.hu553in.to_do_list.exception.ServerErrorException;
-import com.github.hu553in.to_do_list.form.CreateTaskForm;
-import com.github.hu553in.to_do_list.form.UpdateTaskForm;
+import com.github.hu553in.to_do_list.exception.SortPropertyNotFoundException;
 import com.github.hu553in.to_do_list.repository.jpa.TaskRepository;
 import com.github.hu553in.to_do_list.repository.jpa.UserRepository;
 import com.github.hu553in.to_do_list.service.ICurrentUserService;
@@ -54,9 +54,9 @@ public class TaskService implements ITaskService {
     }
 
     @Override
-    public TaskDto create(final CreateTaskForm form) {
+    public TaskDto create(final CreateTaskDto dto) {
         TaskEntity task = new TaskEntity();
-        task.setText(form.text());
+        task.setText(dto.text());
         task.setStatus(TaskStatus.TO_DO);
         UserEntity currentUser = userRepository
                 .findById(currentUserService.getCurrentUser().id())
@@ -68,16 +68,16 @@ public class TaskService implements ITaskService {
 
     @Override
     @Transactional
-    public void updateById(final Integer id, final UpdateTaskForm form) {
+    public void updateById(final Integer id, final UpdateTaskDto dto) {
         Integer currentUserId = currentUserService.getCurrentUser().id();
         TaskEntity task = taskRepository
                 .findByIdAndOwnerId(id, currentUserId)
                 .orElseThrow(NotFoundException::new);
         Optional
-                .ofNullable(form.text())
+                .ofNullable(dto.text())
                 .ifPresent(task::setText);
         Optional
-                .ofNullable(form.status())
+                .ofNullable(dto.status())
                 .ifPresent(task::setStatus);
         taskRepository.saveAndFlush(task);
     }
