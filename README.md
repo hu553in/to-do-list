@@ -17,6 +17,7 @@ This project is the backend part of an app for managing tasks.
 
 ## Tech stack
 
+* Java 17
 * Spring Boot
 * PostgreSQL
 
