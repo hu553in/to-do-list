@@ -18,8 +18,8 @@ This project is the backend part of an app for managing tasks.
 ## Tech stack
 
 * Java 17
-* Spring Boot
-* PostgreSQL
+* Spring Boot 2.7.1
+* PostgreSQL 14
 
 ## How to configure
 
