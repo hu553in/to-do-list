@@ -19,6 +19,9 @@ class ApplicationTest extends AbstractDatabaseContainerTest {
     @Test
     @DisplayName("given Spring Boot app - when run Spring Boot based test - then load application context")
     void testAppContextLoads() {
+
+        // assert
+
         Assertions.assertThat(taskController).isNotNull();
     }
 
