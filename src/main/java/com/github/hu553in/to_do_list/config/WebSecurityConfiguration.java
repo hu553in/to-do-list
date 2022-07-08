@@ -33,22 +33,22 @@ import java.util.stream.Collectors;
 @EnableWebSecurity
 public class WebSecurityConfiguration {
 
-    private static final String[] PATTERNS_WITHOUT_AUTH = new String[]{
-            "/sign-in",
-            "/sign-up",
+    private static final String[] PATTERNS_WITHOUT_AUTH = new String[] {
+        "/sign-in",
+        "/sign-up",
 
-            // API docs
-            "/v3/api-docs",
-            "/v3/api-docs.yaml",
-            "/v3/api-docs/**",
-            "/swagger-ui.html",
-            "/swagger-ui/**"
+        // API docs
+        "/v3/api-docs",
+        "/v3/api-docs.yaml",
+        "/v3/api-docs/**",
+        "/swagger-ui.html",
+        "/swagger-ui/**"
     };
 
     private static final List<RequestMatcher> REQUEST_MATCHERS_WITHOUT_AUTH = Arrays
-            .stream(PATTERNS_WITHOUT_AUTH)
-            .map(AntPathRequestMatcher::new)
-            .collect(Collectors.toList());
+        .stream(PATTERNS_WITHOUT_AUTH)
+        .map(AntPathRequestMatcher::new)
+        .collect(Collectors.toList());
 
     private final IJwtService jwtService;
     private final AuthenticationEntryPoint authenticationFailureEntryPoint;
@@ -56,11 +56,11 @@ public class WebSecurityConfiguration {
     private final AuthenticationFailureHandler authenticationFailureHandler;
 
     public WebSecurityConfiguration(
-            final IJwtService jwtService,
-            @Qualifier(CustomAccessDeniedHandler.QUALIFIER) final AccessDeniedHandler accessDeniedHandler,
-            // these abbreviations are used to shorten line length
-            @Qualifier(AuthenticationFailureEntryPoint.QUALIFIER) final AuthenticationEntryPoint aep,
-            @Qualifier(CustomAuthenticationFailureHandler.QUALIFIER) final AuthenticationFailureHandler afh) {
+        final IJwtService jwtService,
+        @Qualifier(CustomAccessDeniedHandler.QUALIFIER) final AccessDeniedHandler accessDeniedHandler,
+        // these abbreviations are used to shorten line length
+        @Qualifier(AuthenticationFailureEntryPoint.QUALIFIER) final AuthenticationEntryPoint aep,
+        @Qualifier(CustomAuthenticationFailureHandler.QUALIFIER) final AuthenticationFailureHandler afh) {
         this.jwtService = jwtService;
         this.accessDeniedHandler = accessDeniedHandler;
         this.authenticationFailureEntryPoint = aep;
@@ -69,32 +69,32 @@ public class WebSecurityConfiguration {
 
     @Bean
     @SuppressFBWarnings(value = "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION",
-            justification = "Exception is thrown by Spring Security methods.")
+        justification = "Exception is thrown by Spring Security methods.")
     public SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) throws Exception {
         AbstractAuthenticationProcessingFilter authProcessingFilter = new HeaderJwtAuthenticationProcessingFilter(
-                new NegatedRequestMatcher(new AndRequestMatcher(REQUEST_MATCHERS_WITHOUT_AUTH)));
+            new NegatedRequestMatcher(new AndRequestMatcher(REQUEST_MATCHERS_WITHOUT_AUTH)));
         authProcessingFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
         return httpSecurity
-                .cors().and()
-                .anonymous().and()
-                .csrf().disable()
-                .formLogin().disable()
-                .httpBasic().disable()
-                .logout().disable()
-                .requestCache().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).disable()
-                .addFilterBefore(authProcessingFilter, FilterSecurityInterceptor.class)
-                .authenticationProvider(new JwtAuthenticationProvider(jwtService))
-                .authorizeRequests(it -> {
-                    it.antMatchers(PATTERNS_WITHOUT_AUTH).permitAll();
-                    it.antMatchers("/admin/**").hasAuthority(Authority.ROLE_ADMIN.toString());
-                    it.anyRequest().authenticated();
-                })
-                .exceptionHandling(it -> {
-                    it.authenticationEntryPoint(authenticationFailureEntryPoint);
-                    it.accessDeniedHandler(accessDeniedHandler);
-                })
-                .build();
+            .cors().and()
+            .anonymous().and()
+            .csrf().disable()
+            .formLogin().disable()
+            .httpBasic().disable()
+            .logout().disable()
+            .requestCache().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).disable()
+            .addFilterBefore(authProcessingFilter, FilterSecurityInterceptor.class)
+            .authenticationProvider(new JwtAuthenticationProvider(jwtService))
+            .authorizeRequests(it -> {
+                it.antMatchers(PATTERNS_WITHOUT_AUTH).permitAll();
+                it.antMatchers("/admin/**").hasAuthority(Authority.ROLE_ADMIN.toString());
+                it.anyRequest().authenticated();
+            })
+            .exceptionHandling(it -> {
+                it.authenticationEntryPoint(authenticationFailureEntryPoint);
+                it.accessDeniedHandler(accessDeniedHandler);
+            })
+            .build();
     }
 
 }

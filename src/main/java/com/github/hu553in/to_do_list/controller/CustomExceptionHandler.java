@@ -48,21 +48,21 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         Collection<String> details = new HashSet<>();
         BindingResult bindingResult = e.getBindingResult();
         bindingResult
-                .getFieldErrors()
-                .forEach(it -> details.add(MessageFormat.format(
-                        "{0}: {1}",
-                        it.getField(),
-                        it.getDefaultMessage())));
+            .getFieldErrors()
+            .forEach(it -> details.add(MessageFormat.format(
+                "{0}: {1}",
+                it.getField(),
+                it.getDefaultMessage())));
         bindingResult
-                .getGlobalErrors()
-                .forEach(it -> details.add(MessageFormat.format(
-                        "{0}: {1}",
-                        it.getObjectName(),
-                        it.getDefaultMessage())));
+            .getGlobalErrors()
+            .forEach(it -> details.add(MessageFormat.format(
+                "{0}: {1}",
+                it.getObjectName(),
+                it.getDefaultMessage())));
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .headers(headers)
-                .body(buildApiErrorView(message, details));
+            .status(HttpStatus.BAD_REQUEST)
+            .headers(headers)
+            .body(buildApiErrorView(message, details));
     }
 
     @Override
@@ -76,19 +76,19 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         StringBuilder stringBuilder = new StringBuilder();
         Class<?> requiredType = e.getRequiredType();
         stringBuilder
-                .append("Conversion of property ")
-                .append(e.getPropertyName())
-                .append(" with value ")
-                .append(e.getValue())
-                .append(requiredType != null
-                        ? MessageFormat.format(" to {0}", requiredType.getCanonicalName())
-                        : " to required type")
-                .append(" is not supported");
+            .append("Conversion of property ")
+            .append(e.getPropertyName())
+            .append(" with value ")
+            .append(e.getValue())
+            .append(requiredType != null
+                ? MessageFormat.format(" to {0}", requiredType.getCanonicalName())
+                : " to required type")
+            .append(" is not supported");
         Collection<String> details = List.of(stringBuilder.toString());
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .headers(headers)
-                .body(buildApiErrorView(message, details));
+            .status(HttpStatus.BAD_REQUEST)
+            .headers(headers)
+            .body(buildApiErrorView(message, details));
     }
 
     @ExceptionHandler(SortPropertyNotFoundException.class)
@@ -100,8 +100,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         Collection<String> details = new ArrayList<>();
         if (e.getCause() instanceof PropertyReferenceException cause) {
             details.add(MessageFormat.format(
-                    "Sort property {0} is not found",
-                    cause.getPropertyName()));
+                "Sort property {0} is not found",
+                cause.getPropertyName()));
         }
         return buildApiErrorView(message, details);
     }
@@ -114,17 +114,17 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         logger.error(message, e);
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
-                .append("Unable to convert value ")
-                .append(e.getValue());
+            .append("Unable to convert value ")
+            .append(e.getValue());
         TypeDescriptor sourceType = e.getSourceType();
         if (sourceType != null) {
             stringBuilder
-                    .append(" from ")
-                    .append(sourceType.getName());
+                .append(" from ")
+                .append(sourceType.getName());
         }
         stringBuilder
-                .append(" to ")
-                .append(e.getTargetType().getName());
+            .append(" to ")
+            .append(e.getTargetType().getName());
         Collection<String> details = List.of(stringBuilder.toString());
         return buildApiErrorView(message, details);
     }
@@ -136,14 +136,14 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         String message = "Some constraints have been violated";
         logger.error(message, e);
         Collection<String> details = e
-                .getConstraintViolations()
-                .stream()
-                .map(it -> MessageFormat.format(
-                        "Root bean {0}, path {1}: {2}",
-                        it.getRootBeanClass().getCanonicalName(),
-                        it.getPropertyPath(),
-                        it.getMessage()))
-                .collect(Collectors.toSet());
+            .getConstraintViolations()
+            .stream()
+            .map(it -> MessageFormat.format(
+                "Root bean {0}, path {1}: {2}",
+                it.getRootBeanClass().getCanonicalName(),
+                it.getPropertyPath(),
+                it.getMessage()))
+            .collect(Collectors.toSet());
         return buildApiErrorView(message, details);
     }
 
@@ -156,8 +156,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         Class<?> requiredType = e.getRequiredType();
         String name = e.getName();
         Collection<String> details = List.of(requiredType != null
-                ? MessageFormat.format("{0} must be of type {1}", name, requiredType.getCanonicalName())
-                : MessageFormat.format("{0} has invalid type", name));
+            ? MessageFormat.format("{0} must be of type {1}", name, requiredType.getCanonicalName())
+            : MessageFormat.format("{0} has invalid type", name));
         return buildApiErrorView(message, details);
     }
 
@@ -206,10 +206,10 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ApiErrorView buildApiErrorView(final String message, final Collection<String> details) {
         return ApiErrorView
-                .builder()
-                .message(message)
-                .details(details)
-                .build();
+            .builder()
+            .message(message)
+            .details(details)
+            .build();
     }
 
     private ApiErrorView buildApiErrorView(final String message) {

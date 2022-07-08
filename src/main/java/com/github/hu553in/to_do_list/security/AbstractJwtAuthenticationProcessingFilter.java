@@ -30,9 +30,9 @@ public abstract class AbstractJwtAuthenticationProcessingFilter extends Abstract
             return new JwtToAuthenticate(extractJwtFromRequest(request));
         } catch (Exception e) {
             return new AnonymousAuthenticationToken(
-                    ANONYMOUS,
-                    ANONYMOUS,
-                    List.of(Authority.ROLE_ANONYMOUS::toString));
+                ANONYMOUS,
+                ANONYMOUS,
+                List.of(Authority.ROLE_ANONYMOUS::toString));
         }
     }
 
@@ -45,6 +45,6 @@ public abstract class AbstractJwtAuthenticationProcessingFilter extends Abstract
         filterChain.doFilter(request, response);
     }
 
-    protected abstract String extractJwtFromRequest(final HttpServletRequest request) throws AuthenticationException;
+    protected abstract String extractJwtFromRequest(HttpServletRequest request) throws AuthenticationException;
 
 }

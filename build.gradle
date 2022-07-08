@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'jacoco'
+    id 'checkstyle'
 
     id 'io.freefair.lombok' version "$lombokPluginVersion"
     id 'org.springframework.boot' version "$springBootVersion"
@@ -73,6 +74,8 @@ spotbugsTest {
 
 check {
     dependsOn {
+        checkstyleMain
+        checkstyleTest
         spotbugsMain
         spotbugsTest
     }
@@ -85,4 +88,8 @@ test {
 
 jar {
     enabled = false
+}
+
+checkstyle {
+    toolVersion = "$checkstyleToolVersion"
 }

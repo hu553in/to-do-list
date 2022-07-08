@@ -33,16 +33,16 @@ public class AuthController {
     private final ConversionService conversionService;
 
     @Operation(
-            summary = "Sign in",
-            responses = {
-                    @ApiResponse(responseCode = "200"),
-                    @ApiResponse(
-                            responseCode = "400",
-                            content = @Content(schema = @Schema(implementation = ApiErrorView.class)))
-            })
+        summary = "Sign in",
+        responses = {
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(
+                responseCode = "400",
+                content = @Content(schema = @Schema(implementation = ApiErrorView.class)))
+        })
     @PostMapping(value = "/sign-in",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public JwtView signIn(@Valid @RequestBody final SignInForm form) {
@@ -50,17 +50,17 @@ public class AuthController {
     }
 
     @Operation(
-            summary = "Sign up",
-            responses = {
-                    @ApiResponse(responseCode = "204"),
-                    @ApiResponse(
-                            responseCode = "400",
-                            content = @Content(schema = @Schema(implementation = ApiErrorView.class))),
-                    @ApiResponse(
-                            responseCode = "409",
-                            description = "Email is already taken",
-                            content = @Content(schema = @Schema(implementation = ApiErrorView.class)))
-            })
+        summary = "Sign up",
+        responses = {
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(
+                responseCode = "400",
+                content = @Content(schema = @Schema(implementation = ApiErrorView.class))),
+            @ApiResponse(
+                responseCode = "409",
+                description = "Email is already taken",
+                content = @Content(schema = @Schema(implementation = ApiErrorView.class)))
+        })
     @PostMapping(value = "/sign-up", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void signUp(@Valid @RequestBody final SignUpForm form) {

@@ -13,6 +13,9 @@ run:
 	./dev-env/wait-for-it.sh -s -t 30 ${POSTGRES_HOST}:${POSTGRES_PORT}
 	java -jar ./build/libs/to-do-list-*.jar
 
+lint:
+	./gradlew checkstyleMain checkstyleTest
+
 up_dev_env:
 	docker-compose -f ./dev-env/docker-compose.yml up -d
 

@@ -36,13 +36,13 @@ public class JwtService implements IJwtService {
         Instant expiresAt = now.plus(jwtConfiguration.getExpiresIn());
         Algorithm algorithm = Algorithm.HMAC512(jwtConfiguration.getSigningKey());
         return JWT
-                .create()
-                .withIssuer(jwtConfiguration.getIssuer())
-                .withIssuedAt(now)
-                .withNotBefore(now)
-                .withSubject(String.valueOf(user.id()))
-                .withExpiresAt(expiresAt)
-                .sign(algorithm);
+            .create()
+            .withIssuer(jwtConfiguration.getIssuer())
+            .withIssuedAt(now)
+            .withNotBefore(now)
+            .withSubject(String.valueOf(user.id()))
+            .withExpiresAt(expiresAt)
+            .sign(algorithm);
     }
 
     @Override
@@ -61,27 +61,27 @@ public class JwtService implements IJwtService {
         Algorithm algorithm = Algorithm.HMAC512(jwtConfiguration.getSigningKey());
         try {
             return JWT
-                    .require(algorithm)
-                    .withIssuer(jwtConfiguration.getIssuer())
-                    .withClaimPresence(RegisteredClaims.SUBJECT)
-                    .withClaimPresence(RegisteredClaims.ISSUED_AT)
-                    .withClaimPresence(RegisteredClaims.NOT_BEFORE)
-                    .withClaimPresence(RegisteredClaims.EXPIRES_AT)
-                    .acceptLeeway(jwtConfiguration.getLeewaySeconds())
-                    .build()
-                    .verify(jwt);
+                .require(algorithm)
+                .withIssuer(jwtConfiguration.getIssuer())
+                .withClaimPresence(RegisteredClaims.SUBJECT)
+                .withClaimPresence(RegisteredClaims.ISSUED_AT)
+                .withClaimPresence(RegisteredClaims.NOT_BEFORE)
+                .withClaimPresence(RegisteredClaims.EXPIRES_AT)
+                .acceptLeeway(jwtConfiguration.getLeewaySeconds())
+                .build()
+                .verify(jwt);
         } catch (JWTVerificationException e) {
             String message = e.getMessage();
             throw message != null
-                    ? new JwtValidationException(message)
-                    : new JwtValidationException();
+                ? new JwtValidationException(message)
+                : new JwtValidationException();
         }
     }
 
     private Authentication authenticateUserById(final Integer userId) {
         UserEntity user = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new NotFoundException("User is not found by ID"));
+            .findById(userId)
+            .orElseThrow(() -> new NotFoundException("User is not found by ID"));
         Collection<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(Authority.ROLE_USER::toString);
         if (user.getAdmin()) {

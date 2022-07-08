@@ -39,31 +39,31 @@ public class UserController {
     private final ConversionService conversionService;
 
     @Operation(
-            summary = "[ADMIN] Get all users",
-            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
+        summary = "[ADMIN] Get all users",
+        security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Collection<UserView> getAll() {
         return userService
-                .getAll()
-                .stream()
-                .map(it -> conversionService.convert(it, UserView.class))
-                .collect(Collectors.toSet());
+            .getAll()
+            .stream()
+            .map(it -> conversionService.convert(it, UserView.class))
+            .collect(Collectors.toSet());
     }
 
     @Operation(
-            summary = "[ADMIN] Get the user by ID",
-            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME),
-            responses = {
-                    @ApiResponse(responseCode = "200"),
-                    @ApiResponse(
-                            responseCode = "400",
-                            content = @Content(schema = @Schema(implementation = ApiErrorView.class))),
-                    @ApiResponse(
-                            responseCode = "404",
-                            content = @Content(schema = @Schema(implementation = ApiErrorView.class)))
-            })
+        summary = "[ADMIN] Get the user by ID",
+        security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME),
+        responses = {
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(
+                responseCode = "400",
+                content = @Content(schema = @Schema(implementation = ApiErrorView.class))),
+            @ApiResponse(
+                responseCode = "404",
+                content = @Content(schema = @Schema(implementation = ApiErrorView.class)))
+        })
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -72,21 +72,21 @@ public class UserController {
     }
 
     @Operation(
-            summary = "[ADMIN] Update the user",
-            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME),
-            responses = {
-                    @ApiResponse(responseCode = "204"),
-                    @ApiResponse(
-                            responseCode = "400",
-                            content = @Content(schema = @Schema(implementation = ApiErrorView.class))),
-                    @ApiResponse(
-                            responseCode = "404",
-                            content = @Content(schema = @Schema(implementation = ApiErrorView.class))),
-                    @ApiResponse(
-                            responseCode = "409",
-                            description = "Email is already taken",
-                            content = @Content(schema = @Schema(implementation = ApiErrorView.class)))
-            })
+        summary = "[ADMIN] Update the user",
+        security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME),
+        responses = {
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(
+                responseCode = "400",
+                content = @Content(schema = @Schema(implementation = ApiErrorView.class))),
+            @ApiResponse(
+                responseCode = "404",
+                content = @Content(schema = @Schema(implementation = ApiErrorView.class))),
+            @ApiResponse(
+                responseCode = "409",
+                description = "Email is already taken",
+                content = @Content(schema = @Schema(implementation = ApiErrorView.class)))
+        })
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable("id") final Integer id, @Valid @RequestBody final UpdateUserForm form) {
