@@ -27,9 +27,9 @@ public class AuthService implements IAuthService {
     @Override
     public String signIn(final SignInDto dto) {
         UserEntity user = userRepository
-                .findByEmail(dto.email())
-                .filter(it -> passwordEncoder.matches(dto.password(), it.getPassword()))
-                .orElseThrow(AuthorizationFailedException::new);
+            .findByEmail(dto.email())
+            .filter(it -> passwordEncoder.matches(dto.password(), it.getPassword()))
+            .orElseThrow(AuthorizationFailedException::new);
         return jwtService.buildJwt(conversionService.convert(user, UserDto.class));
     }
 

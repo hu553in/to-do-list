@@ -31,23 +31,23 @@ public class AbstractAuthenticationFailureProcessor {
         if (e instanceof JwtAuthenticationException) {
             StringBuilder stringBuilder = new StringBuilder();
             Optional
-                    .ofNullable(e.getMessage())
-                    .filter(StringUtils::hasLength)
-                    .ifPresent(stringBuilder::append);
+                .ofNullable(e.getMessage())
+                .filter(StringUtils::hasLength)
+                .ifPresent(stringBuilder::append);
             Throwable cause = e.getCause();
             if (cause instanceof JwtValidationException) {
                 Optional
-                        .ofNullable(cause.getMessage())
-                        .filter(StringUtils::hasLength)
-                        .ifPresent(it -> stringBuilder.append(": ").append(it));
+                    .ofNullable(cause.getMessage())
+                    .filter(StringUtils::hasLength)
+                    .ifPresent(it -> stringBuilder.append(": ").append(it));
             }
             details.add(stringBuilder.toString());
         }
         ApiErrorView apiErrorView = ApiErrorView
-                .builder()
-                .message("User is not authorized to access resource")
-                .details(details)
-                .build();
+            .builder()
+            .message("User is not authorized to access resource")
+            .details(details)
+            .build();
         objectMapper.writeValue(response.getOutputStream(), apiErrorView);
     }
 

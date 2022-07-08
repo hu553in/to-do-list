@@ -26,9 +26,9 @@ public class SpringdocConfiguration {
         Schema<ApiErrorView> schema = new Schema<>();
         schema.set$ref("#/components/schemas/" + ApiErrorView.class.getSimpleName());
         MediaType mediaType = new MediaType()
-                .schema(schema);
+            .schema(schema);
         ERROR_API_RESPONSE_CONTENT = new Content()
-                .addMediaType(APPLICATION_JSON_VALUE, mediaType);
+            .addMediaType(APPLICATION_JSON_VALUE, mediaType);
     }
 
     @Bean
@@ -38,31 +38,31 @@ public class SpringdocConfiguration {
 
     private void addGlobalErrorApiResponses(final OpenAPI openApi) {
         Map<String, ApiResponse> errorApiResponseForStatusCode = Map.of(
-                String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()),
-                getErrorApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
+            String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()),
+            getErrorApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
         Map<String, ApiResponse> authErrorApiResponseForStatusCode = Map.of(
-                String.valueOf(HttpStatus.UNAUTHORIZED.value()),
-                getErrorApiResponse(HttpStatus.UNAUTHORIZED.getReasonPhrase()),
-                String.valueOf(HttpStatus.FORBIDDEN.value()),
-                getErrorApiResponse(HttpStatus.FORBIDDEN.getReasonPhrase()));
+            String.valueOf(HttpStatus.UNAUTHORIZED.value()),
+            getErrorApiResponse(HttpStatus.UNAUTHORIZED.getReasonPhrase()),
+            String.valueOf(HttpStatus.FORBIDDEN.value()),
+            getErrorApiResponse(HttpStatus.FORBIDDEN.getReasonPhrase()));
         openApi
-                .getPaths()
-                .values()
-                .forEach(pathItem -> pathItem
-                        .readOperations()
-                        .forEach(operation -> {
-                            ApiResponses responses = operation.getResponses();
-                            errorApiResponseForStatusCode.forEach(responses::addApiResponse);
-                            if (!CollectionUtils.isEmpty(operation.getSecurity())) {
-                                authErrorApiResponseForStatusCode.forEach(responses::addApiResponse);
-                            }
-                        }));
+            .getPaths()
+            .values()
+            .forEach(pathItem -> pathItem
+                .readOperations()
+                .forEach(operation -> {
+                    ApiResponses responses = operation.getResponses();
+                    errorApiResponseForStatusCode.forEach(responses::addApiResponse);
+                    if (!CollectionUtils.isEmpty(operation.getSecurity())) {
+                        authErrorApiResponseForStatusCode.forEach(responses::addApiResponse);
+                    }
+                }));
     }
 
     private ApiResponse getErrorApiResponse(final String description) {
         return new ApiResponse()
-                .description(description)
-                .content(ERROR_API_RESPONSE_CONTENT);
+            .description(description)
+            .content(ERROR_API_RESPONSE_CONTENT);
     }
 
 }

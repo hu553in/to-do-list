@@ -28,40 +28,40 @@ public class UserService implements IUserService {
     @Override
     public Collection<UserDto> getAll() {
         return userRepository
-                .findAll()
-                .stream()
-                .map(it -> conversionService.convert(it, UserDto.class))
-                .collect(Collectors.toSet());
+            .findAll()
+            .stream()
+            .map(it -> conversionService.convert(it, UserDto.class))
+            .collect(Collectors.toSet());
     }
 
     @Override
     public UserDto getById(final Integer id) {
         return userRepository
-                .findById(id)
-                .map(it -> conversionService.convert(it, UserDto.class))
-                .orElseThrow(NotFoundException::new);
+            .findById(id)
+            .map(it -> conversionService.convert(it, UserDto.class))
+            .orElseThrow(NotFoundException::new);
     }
 
     @Override
     @Transactional
     public void updateById(final Integer id, final UpdateUserDto dto) {
         UserEntity user = userRepository
-                .findById(id)
-                .orElseThrow(NotFoundException::new);
+            .findById(id)
+            .orElseThrow(NotFoundException::new);
         Optional
-                .ofNullable(dto.email())
-                .ifPresent(it -> {
-                    if (userRepository.findByEmail(it).isPresent()) {
-                        throw new EmailTakenException();
-                    }
-                    user.setEmail(it);
-                });
+            .ofNullable(dto.email())
+            .ifPresent(it -> {
+                if (userRepository.findByEmail(it).isPresent()) {
+                    throw new EmailTakenException();
+                }
+                user.setEmail(it);
+            });
         Optional
-                .ofNullable(dto.password())
-                .ifPresent(it -> user.setPassword(passwordEncoder.encode(it)));
+            .ofNullable(dto.password())
+            .ifPresent(it -> user.setPassword(passwordEncoder.encode(it)));
         Optional
-                .ofNullable(dto.admin())
-                .ifPresent(user::setAdmin);
+            .ofNullable(dto.admin())
+            .ifPresent(user::setAdmin);
         userRepository.saveAndFlush(user);
     }
 

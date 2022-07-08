@@ -15,7 +15,7 @@ import java.io.IOException;
 @Qualifier(AuthenticationFailureEntryPoint.QUALIFIER)
 @Slf4j
 public class AuthenticationFailureEntryPoint extends AbstractAuthenticationFailureProcessor
-        implements AuthenticationEntryPoint {
+    implements AuthenticationEntryPoint {
 
     public static final String QUALIFIER = "authenticationFailureEntryPoint";
 

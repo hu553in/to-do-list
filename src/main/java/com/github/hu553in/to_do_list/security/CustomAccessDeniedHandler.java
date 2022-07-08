@@ -33,10 +33,10 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         ApiErrorView apiErrorView = ApiErrorView
-                .builder()
-                .message("User does not have access to resource")
-                .details(List.of())
-                .build();
+            .builder()
+            .message("User does not have access to resource")
+            .details(List.of())
+            .build();
         objectMapper.writeValue(response.getOutputStream(), apiErrorView);
     }
 

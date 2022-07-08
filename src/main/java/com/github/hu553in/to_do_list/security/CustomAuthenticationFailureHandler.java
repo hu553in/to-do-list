@@ -15,7 +15,7 @@ import java.io.IOException;
 @Qualifier(CustomAuthenticationFailureHandler.QUALIFIER)
 @Slf4j
 public class CustomAuthenticationFailureHandler extends AbstractAuthenticationFailureProcessor
-        implements AuthenticationFailureHandler {
+    implements AuthenticationFailureHandler {
 
     public static final String QUALIFIER = "customAuthenticationFailureHandler";
 

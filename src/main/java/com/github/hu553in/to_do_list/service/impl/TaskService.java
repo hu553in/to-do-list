@@ -37,8 +37,8 @@ public class TaskService implements ITaskService {
         Integer currentUserId = currentUserService.getCurrentUser().id();
         try {
             return taskRepository
-                    .findAllByStatusAndOwnerId(status, currentUserId, pageable)
-                    .map(it -> conversionService.convert(it, TaskDto.class));
+                .findAllByStatusAndOwnerId(status, currentUserId, pageable)
+                .map(it -> conversionService.convert(it, TaskDto.class));
         } catch (PropertyReferenceException e) {
             throw new SortPropertyNotFoundException(e);
         }
@@ -48,9 +48,9 @@ public class TaskService implements ITaskService {
     public TaskDto getById(final Integer id) {
         Integer currentUserId = currentUserService.getCurrentUser().id();
         return taskRepository
-                .findByIdAndOwnerId(id, currentUserId)
-                .map(it -> conversionService.convert(it, TaskDto.class))
-                .orElseThrow(NotFoundException::new);
+            .findByIdAndOwnerId(id, currentUserId)
+            .map(it -> conversionService.convert(it, TaskDto.class))
+            .orElseThrow(NotFoundException::new);
     }
 
     @Override
@@ -59,8 +59,8 @@ public class TaskService implements ITaskService {
         task.setText(dto.text());
         task.setStatus(TaskStatus.TO_DO);
         UserEntity currentUser = userRepository
-                .findById(currentUserService.getCurrentUser().id())
-                .orElseThrow(() -> new ServerErrorException("Current user is not found by ID"));
+            .findById(currentUserService.getCurrentUser().id())
+            .orElseThrow(() -> new ServerErrorException("Current user is not found by ID"));
         task.setOwner(currentUser);
         TaskEntity createdTask = taskRepository.saveAndFlush(task);
         return conversionService.convert(createdTask, TaskDto.class);
@@ -71,14 +71,14 @@ public class TaskService implements ITaskService {
     public void updateById(final Integer id, final UpdateTaskDto dto) {
         Integer currentUserId = currentUserService.getCurrentUser().id();
         TaskEntity task = taskRepository
-                .findByIdAndOwnerId(id, currentUserId)
-                .orElseThrow(NotFoundException::new);
+            .findByIdAndOwnerId(id, currentUserId)
+            .orElseThrow(NotFoundException::new);
         Optional
-                .ofNullable(dto.text())
-                .ifPresent(task::setText);
+            .ofNullable(dto.text())
+            .ifPresent(task::setText);
         Optional
-                .ofNullable(dto.status())
-                .ifPresent(task::setStatus);
+            .ofNullable(dto.status())
+            .ifPresent(task::setStatus);
         taskRepository.saveAndFlush(task);
     }
 
@@ -87,8 +87,8 @@ public class TaskService implements ITaskService {
     public void deleteById(final Integer id) {
         Integer currentUserId = currentUserService.getCurrentUser().id();
         taskRepository
-                .deleteByIdAndOwnerId(id, currentUserId)
-                .orElseThrow(NotFoundException::new);
+            .deleteByIdAndOwnerId(id, currentUserId)
+            .orElseThrow(NotFoundException::new);
     }
 
 }

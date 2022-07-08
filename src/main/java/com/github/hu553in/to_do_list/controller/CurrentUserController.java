@@ -30,8 +30,8 @@ public class CurrentUserController {
     private final ConversionService conversionService;
 
     @Operation(
-            summary = "Get the current user",
-            security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
+        summary = "Get the current user",
+        security = @SecurityRequirement(name = BearerJwtAuthSecurityScheme.NAME))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

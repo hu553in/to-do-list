@@ -22,9 +22,9 @@ public class CurrentUserService implements ICurrentUserService {
             throw new ServerErrorException("Authentication principal must be integer representing current user ID");
         }
         Boolean admin = authentication
-                .getAuthorities()
-                .stream()
-                .anyMatch(it -> Objects.equals(it.getAuthority(), Authority.ROLE_ADMIN.toString()));
+            .getAuthorities()
+            .stream()
+            .anyMatch(it -> Objects.equals(it.getAuthority(), Authority.ROLE_ADMIN.toString()));
         return new CurrentUserDto(currentUserId, admin);
     }
 

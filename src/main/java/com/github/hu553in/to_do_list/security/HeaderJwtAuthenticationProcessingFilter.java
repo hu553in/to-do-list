@@ -24,16 +24,16 @@ public class HeaderJwtAuthenticationProcessingFilter extends AbstractJwtAuthenti
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authorizationHeader.startsWith(AUTHORIZATION_HEADER_PREFIX)) {
             String jwt = StringUtils
-                    .substring(authorizationHeader, AUTHORIZATION_HEADER_PREFIX.length())
-                    .trim();
+                .substring(authorizationHeader, AUTHORIZATION_HEADER_PREFIX.length())
+                .trim();
             if (jwt.length() > 0) {
                 return jwt;
             }
         }
         throw new JwtAuthenticationException(MessageFormat.format(
-                "Invalid {0} header: {1}",
-                HttpHeaders.AUTHORIZATION,
-                authorizationHeader));
+            "Invalid {0} header: {1}",
+            HttpHeaders.AUTHORIZATION,
+            authorizationHeader));
     }
 
 }
