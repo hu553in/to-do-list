@@ -1,5 +1,6 @@
 package com.github.hu553in.to_do_list.config;
 
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -13,6 +14,7 @@ import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
 @EnableWebMvc
+@EnableCaching
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
     @Override

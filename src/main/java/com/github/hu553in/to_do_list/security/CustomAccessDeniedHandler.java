@@ -37,7 +37,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
             .message("User does not have access to resource")
             .details(List.of())
             .build();
-        objectMapper.writeValue(response.getOutputStream(), apiErrorView);
+        objectMapper.writeValue(response.getWriter(), apiErrorView);
     }
 
 }

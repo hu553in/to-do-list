@@ -17,6 +17,9 @@ spring:
     user:
       name: ${SPRING_SECURITY_USER}
       password: ${SPRING_SECURITY_PASSWORD}
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
 
 jwt:
   issuer: ${JWT_ISSUER}
@@ -26,3 +29,29 @@ jwt:
 
 springdoc:
   default-produces-media-type: application/json
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: bucket4j-buckets
+      url: /sign-in
+      http-response-body: ''
+      rate-limits:
+        - expression: getRemoteAddr()
+          bandwidths:
+            - capacity: 1
+              time: 500
+              unit: millis
+              fixed-refill-interval: 1
+              fixed-refill-interval-unit: minutes
+    - cache-name: bucket4j-buckets
+      url: /sign-up
+      http-response-body: ''
+      rate-limits:
+        - expression: getRemoteAddr()
+          bandwidths:
+            - capacity: 1
+              time: 500
+              unit: millis
+              fixed-refill-interval: 1
+              fixed-refill-interval-unit: minutes

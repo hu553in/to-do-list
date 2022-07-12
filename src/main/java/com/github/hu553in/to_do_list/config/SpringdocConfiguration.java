@@ -39,7 +39,9 @@ public class SpringdocConfiguration {
     private void addGlobalErrorApiResponses(final OpenAPI openApi) {
         Map<String, ApiResponse> errorApiResponseForStatusCode = Map.of(
             String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()),
-            getErrorApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
+            getErrorApiResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()),
+            String.valueOf(HttpStatus.TOO_MANY_REQUESTS.value()),
+            getErrorApiResponse(HttpStatus.TOO_MANY_REQUESTS.getReasonPhrase()));
         Map<String, ApiResponse> authErrorApiResponseForStatusCode = Map.of(
             String.valueOf(HttpStatus.UNAUTHORIZED.value()),
             getErrorApiResponse(HttpStatus.UNAUTHORIZED.getReasonPhrase()),

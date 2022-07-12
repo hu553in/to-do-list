@@ -48,7 +48,7 @@ public class AbstractAuthenticationFailureProcessor {
             .message("User is not authorized to access resource")
             .details(details)
             .build();
-        objectMapper.writeValue(response.getOutputStream(), apiErrorView);
+        objectMapper.writeValue(response.getWriter(), apiErrorView);
     }
 
 }

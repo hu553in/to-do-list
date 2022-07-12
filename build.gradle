@@ -37,9 +37,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
+    implementation "org.ehcache:ehcache:$ehcacheVersion"
+    implementation "com.giffing.bucket4j.spring.boot.starter:bucket4j-spring-boot-starter:$bucket4jSpringBootStarterVersion"
     implementation "com.auth0:java-jwt:$javaJwtVersion"
     runtimeOnly 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'
