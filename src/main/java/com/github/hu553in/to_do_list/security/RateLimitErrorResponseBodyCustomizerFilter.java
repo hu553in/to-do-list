@@ -32,7 +32,7 @@ public class RateLimitErrorResponseBodyCustomizerFilter extends OncePerRequestFi
                                     @NonNull final FilterChain filterChain) throws IOException, ServletException {
         filterChain.doFilter(request, response);
         if (response.getStatus() == HttpStatus.TOO_MANY_REQUESTS.value()) {
-            logger.info(
+            logger.debug(
                 "Customizing rate limit error response body for {} {}",
                 request.getMethod(),
                 request.getRequestURI());

@@ -34,24 +34,32 @@ bucket4j:
   enabled: true
   filters:
     - cache-name: bucket4j-buckets
-      url: /sign-in
+      url: .*
+      http-content-type: application/json
       http-response-body: ''
       rate-limits:
         - expression: getRemoteAddr()
           bandwidths:
-            - capacity: 1
-              time: 500
-              unit: millis
-              fixed-refill-interval: 1
-              fixed-refill-interval-unit: minutes
+            - capacity: 60
+              time: 1
+              unit: minutes
+    - cache-name: bucket4j-buckets
+      url: /sign-in
+      http-content-type: application/json
+      http-response-body: ''
+      rate-limits:
+        - expression: getRemoteAddr()
+          bandwidths:
+            - capacity: 5
+              time: 1
+              unit: minutes
     - cache-name: bucket4j-buckets
       url: /sign-up
+      http-content-type: application/json
       http-response-body: ''
       rate-limits:
         - expression: getRemoteAddr()
           bandwidths:
-            - capacity: 1
-              time: 500
-              unit: millis
-              fixed-refill-interval: 1
-              fixed-refill-interval-unit: minutes
+            - capacity: 5
+              time: 1
+              unit: minutes
