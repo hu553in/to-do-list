@@ -6,4 +6,6 @@ public interface ICurrentUserService {
 
     CurrentUserDto getCurrentUser();
 
+    Integer getCurrentUserId();
+
 }

@@ -38,7 +38,7 @@ bucket4j:
       http-content-type: application/json
       http-response-body: ''
       rate-limits:
-        - expression: getRemoteAddr()
+        - expression: '@currentUserService.getCurrentUserId() ?: getRemoteAddr()'
           bandwidths:
             - capacity: 60
               time: 1
@@ -48,7 +48,7 @@ bucket4j:
       http-content-type: application/json
       http-response-body: ''
       rate-limits:
-        - expression: getRemoteAddr()
+        - expression: '@currentUserService.getCurrentUserId() ?: getRemoteAddr()'
           bandwidths:
             - capacity: 5
               time: 1
@@ -58,7 +58,7 @@ bucket4j:
       http-content-type: application/json
       http-response-body: ''
       rate-limits:
-        - expression: getRemoteAddr()
+        - expression: '@currentUserService.getCurrentUserId() ?: getRemoteAddr()'
           bandwidths:
             - capacity: 5
               time: 1

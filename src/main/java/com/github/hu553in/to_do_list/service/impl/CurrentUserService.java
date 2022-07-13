@@ -28,4 +28,13 @@ public class CurrentUserService implements ICurrentUserService {
         return new CurrentUserDto(currentUserId, admin);
     }
 
+    @Override
+    public Integer getCurrentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof Integer currentUserId)) {
+            return null;
+        }
+        return currentUserId;
+    }
+
 }
