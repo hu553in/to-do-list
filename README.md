@@ -49,3 +49,20 @@ Remember that you will need to use your custom values instead of used in instruc
 4. Run `make`
 
 When the server is started, you can open [Swagger UI](http://localhost:8080/swagger-ui.html) to see API docs.
+
+## Deploy to Kubernetes
+
+You can find a simple Kubernetes deployment example (using Minikube) in `./deploy/minikube` directory.
+
+### How to use
+
+1. Do steps 1-3 from previous section
+2. Log in into Docker
+3. Install and start Minikube
+4. Enable Minikube Ingress addon
+5. Review all configs and scripts in `./deploy/minikube` directory (and change something if required)
+6. Run `pushd ./deploy/minikube; ./minikube-deploy.sh; popd`
+7. Run `minikube kubectl -- get ingress` to get an IP address of deployed application
+   (wait several minutes if `ADDRESS` column does not contain an IP address)
+
+When an IP address is assigned, you can open `http://ASSIGNED_IP/swagger-ui.html` to see API docs.

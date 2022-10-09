@@ -10,23 +10,24 @@ build:
 	./gradlew clean build
 
 run:
-	./dev-env/wait-for-it.sh -s -t 30 ${POSTGRES_HOST}:${POSTGRES_PORT}
+	docker-compose -f ./deploy/docker/docker-compose.yml exec postgresql \
+	/bin/bash -c 'until pg_isready; do echo "Retrying after 10 seconds..." && sleep 10; done'
 	java -jar ./build/libs/to-do-list-*.jar
 
 lint:
 	./gradlew checkstyleMain checkstyleTest
 
 up_dev_env:
-	docker-compose -f ./dev-env/docker-compose.yml up -d
+	docker-compose -f ./deploy/docker/docker-compose.yml up -d
+
+connect_to_dev_env_postgres:
+	docker-compose -f ./deploy/docker/docker-compose.yml exec postgresql bash
 
 down_dev_env:
-	docker-compose -f ./dev-env/docker-compose.yml down
+	docker-compose -f ./deploy/docker/docker-compose.yml down
 
 down_dev_env_rm_images:
-	docker-compose -f ./dev-env/docker-compose.yml down --rmi all
-
-connect_to_psql_dev_env:
-	docker-compose exec to-do-list-postgresql psql ${POSTGRES_USER} -U ${POSTGRES_PASSWORD}
+	docker-compose -f ./deploy/docker/docker-compose.yml down --rmi all
 
 generate_api_docs: up_dev_env
 	./gradlew clean generateOpenApiDocs

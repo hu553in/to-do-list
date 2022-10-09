@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  labels:
+    app: to-do-list
+data:
+  SPRING_PROFILE: prod
+  POSTGRES_HOST: postgresql
+  POSTGRES_PORT: '5432'
+  POSTGRES_DB: to-do-list
+  JWT_DURATION_MINUTES: '30'
+  JWT_LEEWAY_SECONDS: '180'

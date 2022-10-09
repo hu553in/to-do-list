@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: to-do-list
+  labels:
+    app: to-do-list
+spec:
+  type: NodePort
+  ports:
+    - name: 8080-8080
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: to-do-list

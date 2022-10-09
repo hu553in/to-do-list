@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: to-do-list
+  labels:
+    app: to-do-list
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: to-do-list
+  template:
+    metadata:
+      labels:
+        app: to-do-list
+    spec:
+      initContainers:
+        - name: wait-for-postgresql
+          image: postgres:14-alpine
+          command: [ '/bin/bash',
+                     '-c',
+                     'until pg_isready -h postgresql; do echo "Retrying after 10 seconds..." && sleep 10; done' ]
+      containers:
+        - name: to-do-list
+          image: hu553in/to-do-list
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: app-secret
