@@ -38,13 +38,11 @@ Remember that you will need to use your custom values instead of used in instruc
 
 1. Install Docker, Docker Compose, OpenJDK (≥ 17), GNU Make
 2. Run following commands to get the ability to use Docker as non-root user:
-
     ```
     groupadd docker
     usermod -aG docker $(id -un)
     systemctl enable docker
     ```
-
 3. Reboot your machine to apply changes performed in the previous step
 4. Run `make`
 
