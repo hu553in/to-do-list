@@ -56,7 +56,7 @@ You can find a simple Kubernetes deployment example (using Minikube) in `./deplo
 
 1. Do steps 1-3 from previous section
 2. Log in into Docker
-3. Install and start Minikube
+3. Install and start Minikube (≥ 1.27.0)
 4. Enable Minikube Ingress addon
 5. Review all configs and scripts in `./deploy/minikube` directory (and change something if required)
 6. Run `pushd ./deploy/minikube; ./minikube-deploy.sh; popd`
