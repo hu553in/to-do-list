@@ -51,6 +51,10 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-ui:$springdocVersion"
     testImplementation "org.testcontainers:postgresql:$testcontainersVersion"
     testImplementation "org.testcontainers:junit-jupiter:$testcontainersVersion"
+
+    implementation platform("io.sentry:sentry-bom:$sentryVersion")
+    implementation "io.sentry:sentry-spring-boot-starter"
+    implementation "io.sentry:sentry-logback"
 }
 
 jacocoTestReport {

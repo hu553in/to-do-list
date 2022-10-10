@@ -3,3 +3,6 @@ jwt:
   signing-key: 57a95fc7d4e1eac42dcc21e93ca212724254c4f016448aec786825c5dc31af29
   duration-minutes: 30
   leeway-seconds: 180
+
+sentry:
+  environment: test

@@ -21,6 +21,11 @@ spring:
     jcache:
       config: classpath:ehcache.xml
 
+sentry:
+  dsn: ${SENTRY_DSN}
+  traces-sample-rate: 1.0
+  environment: ${SPRING_PROFILE}
+
 jwt:
   issuer: ${JWT_ISSUER}
   signing-key: ${JWT_SIGNING_KEY}
