@@ -9,6 +9,7 @@ import com.github.hu553in.to_do_list.security.JwtAuthenticationProvider;
 import com.github.hu553in.to_do_list.service.IJwtService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -37,8 +38,10 @@ public class WebSecurityConfiguration {
         "/sign-in",
         "/sign-up",
 
+        // Spring Boot Actuator
+        "/actuator/**",
+
         // API docs
-        "/v3/api-docs",
         "/v3/api-docs.yaml",
         "/v3/api-docs/**",
         "/swagger-ui.html",
@@ -85,7 +88,8 @@ public class WebSecurityConfiguration {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).disable()
             .addFilterBefore(authProcessingFilter, FilterSecurityInterceptor.class)
             .authenticationProvider(new JwtAuthenticationProvider(jwtService))
-            .authorizeRequests(it -> {
+            .authorizeHttpRequests(it -> {
+                it.requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll();
                 it.antMatchers(PATTERNS_WITHOUT_AUTH).permitAll();
                 it.antMatchers("/admin/**").hasAuthority(Authority.ROLE_ADMIN.toString());
                 it.anyRequest().authenticated();

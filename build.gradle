@@ -38,6 +38,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
@@ -45,6 +46,7 @@ dependencies {
     implementation "com.giffing.bucket4j.spring.boot.starter:bucket4j-spring-boot-starter:$bucket4jSpringBootStarterVersion"
     implementation "com.auth0:java-jwt:$javaJwtVersion"
     runtimeOnly 'org.postgresql:postgresql'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.flywaydb:flyway-core'
     implementation "org.mapstruct:mapstruct:$mapStructVersion"
     implementation "org.mapstruct.extensions.spring:mapstruct-spring-annotations:$mapStructSpringExtensionsVersion"
