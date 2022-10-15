@@ -3,16 +3,16 @@ apiVersion: v1
 kind: PersistentVolume
 
 metadata:
-  name: postgresql-pv
+  name: grafana-pv
   labels:
-    app: postgresql
+    app: grafana
     type: local
 
 spec:
   storageClassName: manual
   capacity:
-    storage: 5Gi
+    storage: 1Gi
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   hostPath:
-    path: /mnt/data/postgresql
+    path: /mnt/data/grafana

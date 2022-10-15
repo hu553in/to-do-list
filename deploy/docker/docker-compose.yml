@@ -1,14 +1,43 @@
-version: "3.3"
+version: '3.3'
 
 services:
+
+  app:
+    container_name: to-do-list-app
+    build:
+      context: ./app
+    restart: on-failure
+    command: [ '/bin/sh', '/opt/run-app.sh' ]
+    env_file: ../../.env
+    depends_on:
+      - postgresql
+    ports:
+      - ${APP_HOST_PORT}:8080
+      - ${ACTUATOR_HOST_PORT}:8081
+    volumes:
+      - ./app/run-app.sh:/opt/run-app.sh:ro
+      - ../../build/libs/app.jar:/opt/app.jar:ro
 
   postgresql:
     container_name: to-do-list-postgresql
     image: postgres:14-alpine
     restart: on-failure
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    env_file: ../../.env
+
+  prometheus:
+    container_name: to-do-list-prometheus
+    image: prom/prometheus:v2.39.1
+    restart: on-failure
+    volumes:
+      - ../../prometheus:/etc/prometheus
     ports:
-      - ${POSTGRES_PORT}:5432
+      - ${PROMETHEUS_HOST_PORT}:9090
+
+  grafana:
+    container_name: to-do-list-grafana
+    image: grafana/grafana-oss:9.1.8
+    restart: on-failure
+    network_mode: host
+    env_file: ../../.env
+    volumes:
+      - ../../grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro

@@ -1,9 +1,12 @@
 apiVersion: apps/v1
+
 kind: Deployment
+
 metadata:
   name: postgresql
   labels:
     app: postgresql
+
 spec:
   replicas: 1
   selector:
@@ -17,6 +20,7 @@ spec:
       containers:
         - name: postgresql
           image: postgres:14-alpine
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5432
           envFrom:
@@ -25,24 +29,24 @@ spec:
             - secretRef:
                 name: postgresql-secret
           volumeMounts:
-            - mountPath: /var/lib/postgresql/data
-              name: postgresql-db
+            - name: postgresql-pv
+              mountPath: /var/lib/postgresql/data
           startupProbe:
             exec:
-              command: [ '/bin/bash', '-c', 'pg_isready' ]
+              command: [ '/bin/bash', '-c', 'pg_isready -U $POSTGRES_USER -d $POSTGRES_DB' ]
             initialDelaySeconds: 30
             timeoutSeconds: 3
           livenessProbe:
             exec:
-              command: [ '/bin/bash', '-c', 'psql -U $POSTGRES_USER -d $POSTGRES_DB -c "select 1"' ]
+              command: [ '/bin/bash', '-c', 'pg_isready -U $POSTGRES_USER -d $POSTGRES_DB' ]
             initialDelaySeconds: 30
             timeoutSeconds: 3
           readinessProbe:
             exec:
-              command: [ '/bin/bash', '-c', 'pg_isready' ]
+              command: [ '/bin/bash', '-c', 'pg_isready -U $POSTGRES_USER -d $POSTGRES_DB' ]
             initialDelaySeconds: 30
             timeoutSeconds: 3
       volumes:
-        - name: postgresql-db
+        - name: postgresql-pv
           persistentVolumeClaim:
-            claimName: postgresql-pv-claim
+            claimName: postgresql-pvc
