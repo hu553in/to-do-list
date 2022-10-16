@@ -1,0 +1,12 @@
+apiVersion: v1
+
+kind: ConfigMap
+
+metadata:
+  namespace: ingress-nginx
+  name: ingress-nginx-controller
+  labels:
+    app: ingress
+
+data:
+  hsts: 'false'

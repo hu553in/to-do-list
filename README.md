@@ -12,7 +12,7 @@
 * [How to change the default user set](#how-to-change-the-default-user-set)
 * [How to run](#how-to-run)
 * [Deploy to Kubernetes](#deploy-to-kubernetes)
-   * [How to use](#how-to-use)
+    * [How to use](#how-to-use)
 * [Grafana](#grafana)
     * [Data sources](#data-sources)
     * [Dashboards](#dashboards)
@@ -73,20 +73,26 @@ You can find a simple Kubernetes deployment example (using minikube) in `./deplo
 1. Do steps 1-3 from [How to run](#how-to-run) section
 2. Log in into Docker
 3. Install minikube (≥ 1.27.0)
-4. Run `minikube start`
-5. Review all configs and scripts in `./deploy/minikube` directory and change what is required, at least:
-    * Sentry DSN
-    * Spring Boot application Docker image tag
-6. Run `pushd ./deploy/minikube && ./minikube-deploy.sh && popd`
-7. Wait until all pods in `minikube kubectl -- get pods` command output have `Running` status and all replicas ready
-8. Run `minikube ip` to get an exposed IP address of minikube VM
-9. Run `minikube kubectl -- get service` to get exposed ports of services
+4. Review all configs and scripts in `./deploy/minikube` directory and change what is required, at least:
+    * Sentry DSN in `./deploy/minikube/app/app-config.yaml`
+    * Spring Boot app Docker image tag in `./deploy/minikube/minikube-deploy.sh`
+      and `./deploy/minikube/app/app-deployment.yaml` (default is `hu553in/to-do-list`)
+5. Run `pushd ./deploy/minikube && /bin/bash ./minikube-deploy.sh && popd`
+6. Wait until all pods in `minikube kubectl -- get pods` command output have `Running` status and all replicas ready
+7. Run `minikube kubectl -- get ingress` to get an IP address and hosts of deployed app
+   (retry in a few minutes if `ADDRESS` column does not contain an IP address)
+8. Add the IP address and hosts of deployed app to your OS hosts file, e.g.:
+    ```
+    192.168.49.2 to-do-list.xyz
+    192.168.49.2 prometheus.to-do-list.xyz
+    192.168.49.2 grafana.to-do-list.xyz
+    ```
 
 After doing that, you can open:
 
-* `http://${EXPOSED_IP}:${APP_PORT_8080}/swagger-ui.html` – Swagger UI
-* `http://${EXPOSED_IP}:${PROMETHEUS_PORT}` – Prometheus UI
-* `http://${EXPOSED_IP}:${GRAFANA_PORT}` – Grafana UI
+* [Swagger UI](http://to-do-list.xyz/swagger-ui.html)
+* [Prometheus UI](http://prometheus.to-do-list.xyz)
+* [Grafana UI](http://grafana.to-do-list.xyz)
 
 ## Grafana
 

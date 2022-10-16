@@ -37,7 +37,7 @@ generate_javadoc:
 ###
 
 CONTAINER?=app
-COMMAND?=bash
+COMMAND?=/bin/sh
 
 run_command_in_docker_container:
 	docker-compose -f ./deploy/docker/docker-compose.yml exec $(CONTAINER) $(COMMAND)

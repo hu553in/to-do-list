@@ -1,0 +1,50 @@
+apiVersion: networking.k8s.io/v1
+
+kind: Ingress
+
+metadata:
+  name: ingress
+  labels:
+    app: ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: 'false'
+
+spec:
+  rules:
+    - host: to-do-list.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app
+                port:
+                  number: 8080
+          - path: /actuator
+            pathType: Prefix
+            backend:
+              service:
+                name: app
+                port:
+                  number: 8081
+    - host: prometheus.to-do-list.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus
+                port:
+                  number: 9090
+    - host: grafana.to-do-list.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000
