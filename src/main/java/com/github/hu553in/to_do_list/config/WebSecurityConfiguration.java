@@ -88,7 +88,7 @@ public class WebSecurityConfiguration {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).disable()
             .addFilterBefore(authProcessingFilter, FilterSecurityInterceptor.class)
             .authenticationProvider(new JwtAuthenticationProvider(jwtService))
-            .authorizeHttpRequests(it -> {
+            .authorizeRequests(it -> {
                 it.requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll();
                 it.antMatchers(PATTERNS_WITHOUT_AUTH).permitAll();
                 it.antMatchers("/admin/**").hasAuthority(Authority.ROLE_ADMIN.toString());
