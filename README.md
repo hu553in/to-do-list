@@ -8,6 +8,7 @@
 
 * [Description](#description)
 * [Tech stack](#tech-stack)
+* [Roadmap](#roadmap)
 * [How to configure](#how-to-configure)
 * [How to change the default user set](#how-to-change-the-default-user-set)
 * [How to run](#how-to-run)
@@ -28,6 +29,23 @@ This project is the backend part of an app for managing tasks.
 * PostgreSQL 14
 * Prometheus 2.39.1
 * Grafana 9.1.8
+
+## Roadmap
+
+- [ ] add some provisioned dashboards to Grafana
+- [ ] [configure Kubernetes
+      security](https://kubernetes.io/docs/tasks/configure-pod-container/security-context)
+- [ ] add a file logging
+- [ ] [implement the notification about signing in from a new device or
+      location](https://www.baeldung.com/spring-security-login-new-device-location)
+- [ ] implement the refresh JWT
+- [ ] implement the password change
+- [ ] [implement the password reset via
+      email](https://www.baeldung.com/spring-security-registration-i-forgot-my-password)
+- [ ] increase test coverage to at least 80%
+- [ ] implement the sign up confirmation via email
+      ([1](https://www.baeldung.com/registration-verify-user-by-email),
+      [2](https://www.baeldung.com/spring-security-registration-verification-email))
 
 ## How to configure
 
